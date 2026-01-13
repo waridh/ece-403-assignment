@@ -25,9 +25,60 @@ Find NPN, PNP, SCR (NPNP) devices in the process profile from CMOS
 inverter cross section (next page; draw the 3 devices overtop of the CMOS
 process cross-section) and propose a circuit technique to avoid CMOS SCR
 latchup.
+
+#+caption: The NPN, PNP, and SCR devices found in the process profile of a CMOS inverter cross section.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/q1-bjt-detection.png]]
+
+Now, we are tasked with preventing latchup with some circuit design techniques. The first that we are going to talk about requires that the CMOS process being used supports it. The strategy here is to prevent the NPNP regions from forming using an oxide layer[fn::https://www.analog.com/en/resources/analog-dialogue/articles/winning-the-battle-against-latchup.html]. The big idea here is that by placing insulating regions around the nMOS and pMOS, the full NPNP junction could not form to produce a parasitic SCR. A process profile diagram for the implementation of this design is available in figure [[fig-q1-oxide]].
+
+#+name: fig-q1-oxide
+#+caption: Circuit design that removes latch-up using oxide trenches to break the SCR.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/q1-oxide-solution.png]]
+
 * Question 2
 Suppose you broke the loop between the PNP collector and NPN base of an
 SCR: describe \(I_{Cpnp} = f \left( I_{Bnpn} \right)\) for this 2-BJT circuit with \(V_{DD} = \qty{1.2}{\volt}\), each with \(\beta = 10\). Describe what happens in the closed loop.
+
+Opening up the closed loop, we see the following schematic.
+
+#+name: fig-q2-schematic
+#+caption: The schematic of the closed loop, with an artificial short at \(B_{npn}\) and \(C_{pnp}\)
+#+attr_latex: :width 0.4\linewidth
+[[file:images/q2-schematic.png]]
+
+Using figure [[fig-q2-schematic]], we could start doing some case analysis. When \(I_{B_{npn}}\) is \(0\), the npn transistor is in cut-off, which would bring \(I_{B_{pnp}}\) to \(0\), which would also cut-off the pnp transistor. The expression for \(I_{C_{pnp}}\) in cut-off is available in ([[eq-cut-off]]).
+
+#+name: eq-cut-off
+\begin{equation}
+\text{In cut off}\quad I_{C_{pnp}} = I_{B_{npn}} = 0
+\end{equation}
+
+In the active mode of operation, the behaviour of \(I_{C_{pnp}} = f(I_{B_{npn}})\) in the system is available in ([[eqn-q2-sol]]).
+
+#+name: eq-beta
+\begin{equation}
+I_C = \beta I_B
+\end{equation}
+
+#+name: eq-beta-val
+\begin{equation}
+\beta = 10
+\end{equation}
+
+#+name: eqn-q2-sol
+\begin{align}
+  I_{C_{pnp}} &= \beta I_{B_{pnp}} && (\ref{eq-beta}) \nonumber\\
+  I_{C_{pnp}} &= \beta I_{C_{npn}} \nonumber \\
+  I_{C_{pnp}} &= \beta \left( \beta I_{B_{npn}} \right) && (\ref{eq-beta}) \nonumber \\
+  I_{C_{pnp}} &= 10 \left( 10 I_{B_{npn}} \right) && (\ref{eq-beta-val}) \nonumber\\
+  I_{C_{pnp}} &= 100 I_{B_{npn}} \nonumber \\
+  \therefore f \left( x \right) &= 100 \cdot x
+\end{align}
+
+Translating this to what would happen in a closed loop, the current \(I_{C_{pnp}}\) will remain at \(0\) until some amount of current is injected into the \(I_{B_{npn}}\) node. When this occurs, the current \(I_{C_{pnp}} = I_{B_{npn}}\), but since the \(C_{pnp}\) node and the \(B_{npn}\) node are the same, the amplification of the \(I_{C_{pnp}}\) node will feed back into \(I_{B_{npn}}\) which would further increase the collector current of the pnp BJT. This will go on until the system has reached some saturation current.
+
 * Question 3
 Create a static CMOS schematic, and sticks layout of
 
@@ -39,6 +90,40 @@ Look at the two transistor schematics. Optimize and count the number of:
 a. transistors
 b. diffusion regions
 c. metal-diffusion contacts
+
+Starting with the design, we might start with two separate NAND gates, which is available in figure [[fig-q3-1]].
+
+#+name: fig-q3-1
+#+caption: The basic transistor schematic of the two NAND signals.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/q3-two-nands-basic.png]]
+
+But knowing that the ~b~ input is shared between the two gates we are defining, we could try to share some transistors, specifically, ones in series. From our schematic in figure [[fig-q3-1]], we see that the ~b~ nMOS is in series with the other input in both pull down networks. We could therefore share this transistor between the two. This new design is available in figure [[fig-q3-2]].
+
+#+name: fig-q3-2
+#+caption: The transistor schematic of the two NAND sharing the b input nMOS.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/q3-two-nand-sharing-nmos.png]]
+
+Following the design in figure [[fig-q3-2]], we move on to implement a stick diagram that follows this schematic in figure [[fig-q3-3]]. Here, we are trying to share connections to \(V_{DD}\) and \(V_{SS}\) as much as we could, but in the pull up network, since there must be a separate ~b~ input pMOS, another region of p-diff was added.
+
+#+name: fig-q3-3
+#+caption: The stick diagram for the gate design where the b nMOS is shared.
+#+attr_latex: :width 0.5\linewidth
+[[file:images/q3-stick-diagram.png]]
+
+The count for the number of components for this exercise is available in table [[tab-q3]].
+
+#+name: tab-q3
+#+caption: The number of components being optimized for in question 3.
+| component                | number |
+|--------------------------+--------|
+| transistors              |      7 |
+| diffusion regions        |      4 |
+| metal-diffusion contacts | 11     |
+
+
+
 * Question 4
 Create a static CMOS schematic, and sticks layout of with the same
 optimizations as before:
@@ -46,3 +131,26 @@ optimizations as before:
 #+begin_src vhdl :exports code
 y <= NOT (( a OR b OR c) AND d);
 #+end_src
+
+The schematic is available in figure [[fig-q4-1]], and the stick layout is available in figure [[fig-q4-2]].
+
+#+name: fig-q4-1
+#+caption: The transistor schematic of the defined function.
+#+attr_latex: :width 0.5\linewidth
+[[file:images/q4-schematic.png]]
+
+#+name: fig-q4-2
+#+caption: The stick layout of the defined gate.
+#+attr_latex: :width 0.5\linewidth
+[[file:images/q4-stick.png]]
+
+
+With this design we have the count for the total number of components in figure [[tab-q4]].
+
+#+name: tab-q4
+#+caption: The number of components being optimized for in question 4.
+| component                | number |
+|--------------------------+--------|
+| transistors              |      8 |
+| diffusion regions        |      2 |
+| metal-diffusion contacts | 8      |
