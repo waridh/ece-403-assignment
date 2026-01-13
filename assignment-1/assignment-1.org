@@ -40,3 +40,9 @@ a. transistors
 b. diffusion regions
 c. metal-diffusion contacts
 * Question 4
+Create a static CMOS schematic, and sticks layout of with the same
+optimizations as before:
+
+#+begin_src vhdl :exports code
+y <= NOT (( a OR b OR c) AND d);
+#+end_src

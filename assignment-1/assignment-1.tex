@@ -1,4 +1,4 @@
-% Created 2026-01-12 Mon 19:44
+% Created 2026-01-12 Mon 19:57
 % Intended LaTeX compiler: pdflatex
 \documentclass[hidelinks, 11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -45,17 +45,17 @@
 \begin{document}
 
 \section*{Question 1}
-\label{sec:org6a1efe5}
+\label{sec:org876b172}
 Find NPN, PNP, SCR (NPNP) devices in the process profile from CMOS
 inverter cross section (next page; draw the 3 devices overtop of the CMOS
 process cross-section) and propose a circuit technique to avoid CMOS SCR
 latchup.
 \section*{Question 2}
-\label{sec:org9ccf07c}
+\label{sec:org4118e26}
 Suppose you broke the loop between the PNP collector and NPN base of an
 SCR: describe \(I_{Cpnp} = f \left( I_{Bnpn} \right)\) for this 2-BJT circuit with \(V_{DD} = \qty{1.2}{\volt}\), each with \(\beta = 10\). Describe what happens in the closed loop.
 \section*{Question 3}
-\label{sec:orga60b275}
+\label{sec:org85a2dbd}
 Create a static CMOS schematic, and sticks layout of
 
 \begin{verbatim}
@@ -69,5 +69,11 @@ Look at the two transistor schematics. Optimize and count the number of:
 \item metal-diffusion contacts
 \end{enumerate}
 \section*{Question 4}
-\label{sec:orged16d34}
+\label{sec:org246bcf8}
+Create a static CMOS schematic, and sticks layout of with the same
+optimizations as before:
+
+\begin{verbatim}
+y <= NOT (( a OR b OR c) AND d);
+\end{verbatim}
 \end{document}
