@@ -1,0 +1,42 @@
+#+title: ECE 403 Assignment 1
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+LATEX_HEADER: \makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+#+LATEX_CLASS_OPTIONS: [hidelinks, 11pt]
+#+latex_header: \def \homeworkNumber{1}
+#+latex_header: \usepackage{siunitx}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage{amssymb}
+#+latex_header: \usepackage{mathtools}
+#+latex_header: \usepackage{circuitikz}
+#+latex_header: \usepackage{float}
+#+latex_header: \usepackage{karnaugh-map}
+#+latex_header: \usepackage[sfdefault]{plex-sans}
+#+latex_header: \usepackage{isomath}
+#+latex_header: \usepackage[italic]{mathastext}
+#+latex_header: \usepackage[scale=0.90]{plex-mono}
+#+LATEX_HEADER: \usepackage{fancyhdr}
+#+LATEX_HEADER: \pagestyle{fancyplain}
+#+LATEX_HEADER: \chead{Assignment \homeworkNumber}
+#+LATEX_HEADER: \lhead{Bach \textsc{Wongwandanee}}
+#+LATEX_HEADER: \rhead{ECE 403}
+* Question 1
+Find NPN, PNP, SCR (NPNP) devices in the process profile from CMOS
+inverter cross section (next page; draw the 3 devices overtop of the CMOS
+process cross-section) and propose a circuit technique to avoid CMOS SCR
+latchup.
+* Question 2
+Suppose you broke the loop between the PNP collector and NPN base of an
+SCR: describe \(I_{Cpnp} = f \left( I_{Bnpn} \right)\) for this 2-BJT circuit with \(V_{DD} = \qty{1.2}{\volt}\), each with \(\beta = 10\). Describe what happens in the closed loop.
+* Question 3
+Create a static CMOS schematic, and sticks layout of
+
+#+begin_src vhdl :exports code
+x <= a NAND b; y <= b NAND c;
+#+end_src
+
+Look at the two transistor schematics. Optimize and count the number of:
+a. transistors
+b. diffusion regions
+c. metal-diffusion contacts
+* Question 4
