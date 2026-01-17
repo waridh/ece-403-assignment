@@ -1,0 +1,102 @@
+#+title: ECE 403 Assignment 2
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+LATEX_HEADER: \makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+#+LATEX_CLASS_OPTIONS: [hidelinks, 11pt]
+#+latex_header: \def \homeworkNumber{2}
+#+latex_header: \usepackage{siunitx}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage{amssymb}
+#+latex_header: \usepackage{mathtools}
+#+latex_header: \usepackage{circuitikz}
+#+latex_header: \usepackage{float}
+#+latex_header: \usepackage{karnaugh-map}
+#+latex_header: \usepackage[sfdefault]{plex-sans}
+#+latex_header: \usepackage{isomath}
+#+latex_header: \usepackage[italic]{mathastext}
+#+latex_header: \usepackage[scale=0.90]{plex-mono}
+#+LATEX_HEADER: \usepackage{fancyhdr}
+#+LATEX_HEADER: \pagestyle{fancyplain}
+#+LATEX_HEADER: \chead{Assignment \homeworkNumber}
+#+LATEX_HEADER: \lhead{Bach \textsc{Wongwandanee}}
+#+LATEX_HEADER: \rhead{ECE 403}
+* Question 1
+Produce a schematic and sticks layout for:
+#+begin_src vhdl :exports code
+y <= not (a and b or a and c);
+#+end_src
+
+Minimizing and reporting the number of transistors, contacts and diffusion regions.
+
+This question will be completed assuming that ~AND~ takes precedence over ~OR~, resulting in the following expression.
+
+#+begin_src vhdl :exports code
+y <= not ((a and b) or (a and c));
+#+end_src
+
+From here, we use a little boolean manipulation to simplify the expression further.
+
+\begin{align*}
+y &= \overline{(ab) + (ac)} \\
+y &= \overline{a \left( b + c \right)}
+\end{align*}
+
+We can now implement this function as a gate. The gate is available in figure [[fig-q1]], and the count of the component is available in table [[tab-q1]].
+
+#+name: fig-q1
+#+caption: The transistor schematic and sticks layout for the design in question 1.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/q1-diagram.png]]
+
+#+name: tab-q1
+#+caption: The count of the design parameters for question 1.
+| Parameter        | Number |
+|------------------+--------|
+| Transistors      |      6 |
+| Contacts         |      7 |
+| Diffusion Region |      2 |
+
+
+* Question 2
+Create a static CMOS schematic and sticks layout for this function of 5 inputs (a,b,c,d,e):
+#+begin_src vhdl :exports code
+y <= NOT(ab + ace + dcb + de);
+#+end_src
+Optimize and count the number of:
+a. transistors (less than 20)
+b. diffusion regions
+c. metal-diffusion contacts
+
+We could minimize the number of transistors in the expression a little more.
+
+\begin{align*}
+  y &= \overline{ab + ace + dcb + de} \\
+  y &= \overline{a \left( b + ce \right) + d \left( cb + e \right)}
+\end{align*}
+
+From here, the schematic is available in figure [[fig-q2-1]]. It was found that the PUN and the PDN are Eularian, therefore, we are able to design this system using just two diffusion. With that information, the layout was construction and made available in figure [[fig-q2-2]]. It was assumed that there is only one layer of poly-silicon, but multiple layers of metal, so additional contacts were added to connect poly-silicon that are too far apart.
+
+The total count of components is available in table [[tab-q2]].
+
+#+name: fig-q2-1
+#+caption: The schematic of the gate designed in question 2
+#+attr_latex: :width 0.4\linewidth
+[[file:images/q2-schematic.png]]
+
+#+name: fig-q2-2
+#+caption: The layout of the gate designed in question 2. I was assumed that poly-silicon cannot cross, so additional contacts were added so that a connection between poly-silicon gates could be facilitated.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/q2-layout.png]]
+
+#+name: tab-q2
+#+caption: The count of the design parameters for question 2.
+| Parameter        | Number |
+|------------------+--------|
+| Transistors      |     16 |
+| Diffusion Region |      2 |
+| Contacts         |     24 |
+
+* Question 3
+In layout, what is the difference between a common MOSFET source and drain?
+
+In layout, a MOSFET in isolation has no difference between the source and the drain. You could start telling the difference between a source and a drain in a system by determining which active region has a path to the source (\(V_{DD}\) or \(V_{SS}\)), and which one has a path to the drain (\(V_{DD}\) or \(V_{SS}\)) or the output node.

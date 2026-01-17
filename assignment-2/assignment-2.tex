@@ -1,0 +1,140 @@
+% Created 2026-01-17 Sat 14:22
+% Intended LaTeX compiler: pdflatex
+\documentclass[hidelinks, 11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+\def \homeworkNumber{2}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{karnaugh-map}
+\usepackage[sfdefault]{plex-sans}
+\usepackage{isomath}
+\usepackage[italic]{mathastext}
+\usepackage[scale=0.90]{plex-mono}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\chead{Assignment \homeworkNumber}
+\lhead{Bach \textsc{Wongwandanee}}
+\rhead{ECE 403}
+\author{Waridh (Bach) Wongwandanee}
+\date{\today}
+\title{ECE 403 Assignment 2}
+\hypersetup{
+ pdfauthor={Waridh (Bach) Wongwandanee},
+ pdftitle={ECE 403 Assignment 2},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+\section*{Question 1}
+\label{sec:org2a1dbbf}
+Produce a schematic and sticks layout for:
+\begin{verbatim}
+y <= not (a and b or a and c);
+\end{verbatim}
+
+Minimizing and reporting the number of transistors, contacts and diffusion regions.
+
+This question will be completed assuming that \texttt{AND} takes precedence over \texttt{OR}, resulting in the following expression.
+
+\begin{verbatim}
+y <= not ((a and b) or (a and c));
+\end{verbatim}
+
+From here, we use a little boolean manipulation to simplify the expression further.
+
+\begin{align*}
+y &= \overline{(ab) + (ac)} \\
+y &= \overline{a \left( b + c \right)}
+\end{align*}
+
+We can now implement this function as a gate. The gate is available in figure \ref{fig-q1}, and the count of the component is available in table \ref{tab-q1}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{images/q1-diagram.png}
+\caption{\label{fig-q1}The transistor schematic and sticks layout for the design in question 1.}
+\end{figure}
+
+\begin{table}[htbp]
+\caption{\label{tab-q1}The count of the design parameters for question 1.}
+\centering
+\begin{tabular}{lr}
+Parameter & Number\\
+\hline
+Transistors & 6\\
+Contacts & 7\\
+Diffusion Region & 2\\
+\end{tabular}
+\end{table}
+\section*{Question 2}
+\label{sec:org252082b}
+Create a static CMOS schematic and sticks layout for this function of 5 inputs (a,b,c,d,e):
+\begin{verbatim}
+y <= NOT(ab + ace + dcb + de);
+\end{verbatim}
+Optimize and count the number of:
+\begin{enumerate}
+\item transistors (less than 20)
+\item diffusion regions
+\item metal-diffusion contacts
+\end{enumerate}
+
+We could minimize the number of transistors in the expression a little more.
+
+\begin{align*}
+  y &= \overline{ab + ace + dcb + de} \\
+  y &= \overline{a \left( b + ce \right) + d \left( cb + e \right)}
+\end{align*}
+
+From here, the schematic is available in figure \ref{fig-q2-1}. It was found that the PUN and the PDN are Eularian, therefore, we are able to design this system using just two diffusion. With that information, the layout was construction and made available in figure \ref{fig-q2-2}. It was assumed that there is only one layer of poly-silicon, but multiple layers of metal, so additional contacts were added to connect poly-silicon that are too far apart.
+
+The total count of components is available in table \ref{tab-q2}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.4\linewidth]{images/q2-schematic.png}
+\caption{\label{fig-q2-1}The schematic of the gate designed in question 2}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{images/q2-layout.png}
+\caption{\label{fig-q2-2}The layout of the gate designed in question 2. I was assumed that poly-silicon cannot cross, so additional contacts were added so that a connection between poly-silicon gates could be facilitated.}
+\end{figure}
+
+\begin{table}[htbp]
+\caption{\label{tab-q2}The count of the design parameters for question 2.}
+\centering
+\begin{tabular}{lr}
+Parameter & Number\\
+\hline
+Transistors & 16\\
+Diffusion Region & 2\\
+Contacts & 24\\
+\end{tabular}
+\end{table}
+\section*{Question 3}
+\label{sec:org5019f71}
+In layout, what is the difference between a common MOSFET source and drain?
+
+In layout, a MOSFET in isolation has no difference between the source and the drain. You could start telling the difference between a source and a drain in a system by determining which active region has a path to the source (\(V_{DD}\) or \(V_{SS}\)), and which one has a path to the drain (\(V_{DD}\) or \(V_{SS}\)) or the output node.
+\end{document}
