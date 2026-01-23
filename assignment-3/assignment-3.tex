@@ -1,0 +1,78 @@
+% Created 2026-01-23 Fri 12:40
+% Intended LaTeX compiler: pdflatex
+\documentclass[hidelinks, 11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+\def \homeworkNumber{3}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{karnaugh-map}
+\usepackage[sfdefault]{plex-sans}
+\usepackage{isomath}
+\usepackage[italic]{mathastext}
+\usepackage[scale=0.90]{plex-mono}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\chead{Assignment \homeworkNumber}
+\lhead{Bach \textsc{Wongwandanee}}
+\rhead{ECE 403}
+\author{Waridh (Bach) Wongwandanee}
+\date{\today}
+\title{ECE 403 Assignment 2}
+\hypersetup{
+ pdfauthor={Waridh (Bach) Wongwandanee},
+ pdftitle={ECE 403 Assignment 2},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+\section*{Question 1}
+\label{sec:org4a22ec3}
+Produce a schematic design of 2-to-1 non-restoring multiplexer gate using CMOS transmission gates plus other static CMOS gates. Use inputs \texttt{\{s, d0, d1\}} and output \texttt{y}. Inverted signals are not provided.
+
+\begin{table}[htbp]
+\caption{The truth table of the 2-to-1 non-restoring multiplexer.}
+\centering
+\begin{tabular}{rllr}
+\texttt{s} & \texttt{d1} & \texttt{d0} & y\\
+\hline
+0 & X & 0 & 0\\
+0 & X & 1 & 1\\
+1 & 0 & X & 0\\
+1 & 1 & X & 1\\
+\end{tabular}
+\end{table}
+\section*{Question 2}
+\label{sec:org8fad2ec}
+Draw a sticks diagram of this mux
+Optimize and count the number of:
+\begin{enumerate}
+\item transistors
+\item diffusion regions
+\item metal-diffusion contacts
+\end{enumerate}
+\section*{Question 3}
+\label{sec:orgf6881ea}
+Describe how the delay grows with the number of stages \((n)\) of
+a circuit with these multiplexors connected together (one output
+to the next input) in a combinational path. Remember that
+each transistor has resistance and capacitance.
+\end{document}

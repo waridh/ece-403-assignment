@@ -1,0 +1,45 @@
+#+title: ECE 403 Assignment 2
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+LATEX_HEADER: \makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+#+LATEX_CLASS_OPTIONS: [hidelinks, 11pt]
+#+latex_header: \def \homeworkNumber{3}
+#+latex_header: \usepackage{siunitx}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage{amssymb}
+#+latex_header: \usepackage{mathtools}
+#+latex_header: \usepackage{circuitikz}
+#+latex_header: \usepackage{float}
+#+latex_header: \usepackage{karnaugh-map}
+#+latex_header: \usepackage[sfdefault]{plex-sans}
+#+latex_header: \usepackage{isomath}
+#+latex_header: \usepackage[italic]{mathastext}
+#+latex_header: \usepackage[scale=0.90]{plex-mono}
+#+LATEX_HEADER: \usepackage{fancyhdr}
+#+LATEX_HEADER: \pagestyle{fancyplain}
+#+LATEX_HEADER: \chead{Assignment \homeworkNumber}
+#+LATEX_HEADER: \lhead{Bach \textsc{Wongwandanee}}
+#+LATEX_HEADER: \rhead{ECE 403}
+* Question 1
+Produce a schematic design of 2-to-1 non-restoring multiplexer gate using CMOS transmission gates plus other static CMOS gates. Use inputs ~{s, d0, d1}~ and output ~y~. Inverted signals are not provided.
+
+#+caption: The truth table of the 2-to-1 non-restoring multiplexer.
+| ~s~ | ~d1~ | ~d0~ | y |
+|-----+------+------+---|
+|   0 |    X |    0 | 0 |
+|   0 |    X |    1 | 1 |
+|   1 |    0 |    X | 0 |
+|   1 |    1 |    X | 1 |
+
+
+* Question 2
+Draw a sticks diagram of this mux
+Optimize and count the number of:
+a. transistors
+b. diffusion regions
+c. metal-diffusion contacts
+* Question 3
+Describe how the delay grows with the number of stages \((n)\) of
+a circuit with these multiplexors connected together (one output
+to the next input) in a combinational path. Remember that
+each transistor has resistance and capacitance.
