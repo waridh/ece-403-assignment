@@ -33,13 +33,14 @@ Produce a schematic design of 2-to-1 non-restoring multiplexer gate using CMOS t
 
 
 * Question 2
-Draw a sticks diagram of this mux
+Draw a sticks diagram of this mux.
+
 Optimize and count the number of:
 a. transistors
 b. diffusion regions
 c. metal-diffusion contacts
 * Question 3
 Describe how the delay grows with the number of stages \((n)\) of
-a circuit with these multiplexors connected together (one output
+a circuit with these multiplexers connected together (one output
 to the next input) in a combinational path. Remember that
 each transistor has resistance and capacitance.
