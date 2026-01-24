@@ -1,4 +1,4 @@
-% Created 2026-01-23 Fri 12:40
+% Created 2026-01-23 Fri 22:12
 % Intended LaTeX compiler: pdflatex
 \documentclass[hidelinks, 11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -45,7 +45,7 @@
 \begin{document}
 
 \section*{Question 1}
-\label{sec:org4a22ec3}
+\label{sec:org50bea63}
 Produce a schematic design of 2-to-1 non-restoring multiplexer gate using CMOS transmission gates plus other static CMOS gates. Use inputs \texttt{\{s, d0, d1\}} and output \texttt{y}. Inverted signals are not provided.
 
 \begin{table}[htbp]
@@ -60,19 +60,47 @@ Produce a schematic design of 2-to-1 non-restoring multiplexer gate using CMOS t
 1 & 1 & X & 1\\
 \end{tabular}
 \end{table}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.4\linewidth]{images/q1-schematic.png}
+\caption{The schematic for the 2-to-1 nonrestoring multiplexer gate.}
+\end{figure}
 \section*{Question 2}
-\label{sec:org8fad2ec}
-Draw a sticks diagram of this mux
+\label{sec:org122cd61}
+Draw a sticks diagram of this mux.
+
 Optimize and count the number of:
 \begin{enumerate}
 \item transistors
 \item diffusion regions
 \item metal-diffusion contacts
 \end{enumerate}
+
+The layout of the 2-to-1 non-restoring multiplexer is available in figure \ref{fig-q2-layout}. The count of the components used in the design is available in table \ref{tab-q2-count}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{images/q2-layout.png}
+\caption{\label{fig-q2-layout}The layout for the 2-to-1 non-restoring multiplexer where inverted signals are not provided.}
+\end{figure}
+
+\begin{table}[htbp]
+\caption{\label{tab-q2-count}The number of components used in the implementation of the non-restoring 2-to-1 multiplexer.}
+\centering
+\begin{tabular}{lr}
+component & number\\
+\hline
+transistors & 6\\
+diffusion regions & 4\\
+metal contacts & 13\\
+\end{tabular}
+\end{table}
 \section*{Question 3}
-\label{sec:orgf6881ea}
+\label{sec:orgf6c445e}
 Describe how the delay grows with the number of stages \((n)\) of
-a circuit with these multiplexors connected together (one output
+a circuit with these multiplexers connected together (one output
 to the next input) in a combinational path. Remember that
 each transistor has resistance and capacitance.
 \end{document}

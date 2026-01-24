@@ -32,6 +32,10 @@ Produce a schematic design of 2-to-1 non-restoring multiplexer gate using CMOS t
 |   1 |    1 |    X | 1 |
 
 
+#+caption: The schematic for the 2-to-1 nonrestoring multiplexer gate.
+#+attr_latex: :width 0.4\linewidth
+[[file:images/q1-schematic.png]]
+
 * Question 2
 Draw a sticks diagram of this mux.
 
@@ -39,6 +43,22 @@ Optimize and count the number of:
 a. transistors
 b. diffusion regions
 c. metal-diffusion contacts
+
+The layout of the 2-to-1 non-restoring multiplexer is available in figure [[fig-q2-layout]]. The count of the components used in the design is available in table [[tab-q2-count]].
+
+#+name: fig-q2-layout
+#+caption: The layout for the 2-to-1 non-restoring multiplexer where inverted signals are not provided.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/q2-layout.png]]
+
+#+name: tab-q2-count
+#+caption: The number of components used in the implementation of the non-restoring 2-to-1 multiplexer.
+| component         | number |
+|-------------------+--------|
+| transistors       |      6 |
+| diffusion regions |      4 |
+| metal contacts    | 13     |
+
 * Question 3
 Describe how the delay grows with the number of stages \((n)\) of
 a circuit with these multiplexers connected together (one output
