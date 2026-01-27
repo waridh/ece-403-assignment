@@ -12,8 +12,6 @@
 #+latex_header: \usepackage{float}
 #+latex_header: \usepackage{karnaugh-map}
 #+latex_header: \usepackage[sfdefault]{plex-sans}
-#+latex_header: \usepackage{isomath}
-#+latex_header: \usepackage[italic]{mathastext}
 #+latex_header: \usepackage[scale=0.90]{plex-mono}
 #+LATEX_HEADER: \usepackage{fancyhdr}
 #+LATEX_HEADER: \pagestyle{fancyplain}
@@ -64,3 +62,34 @@ Describe how the delay grows with the number of stages \((n)\) of
 a circuit with these multiplexers connected together (one output
 to the next input) in a combinational path. Remember that
 each transistor has resistance and capacitance.
+
+Starting with the setup of this question, we are putting the inputs and outputs of \(n\) muxes in a cascade topology, as seen in figure [[fig-q3-architecture]]. Converting this to the schematic view, as seen in figure [[fig-q3-schematic]], we see that we could probably model the delay as an Elmore delay, as we would have a good view of the scaling of the delay as you add more mux into the system (no sizing here). The Elmore delay model of the system is available in figure [[fig-q3-elmore]].
+
+From here, a little bit of math lets us see the scaling of the delay. In ([[eq-q3-growth-rate]]), we see that the delay of this system composition has a growth rate of \(O \left( n^2 \right)\), where \(n\) is the number of muxes in the system with it's output tied to the input of the next mux.
+
+#+name: fig-q3-architecture
+#+caption: The architecture of the multiplexers being analyzed.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/q3-architecture.png]]
+
+#+name: fig-q3-schematic
+#+caption: The schematic of the multiplexers being analyzed, where \(\mu_n = m \mu_p\), and \(x = m +1\).
+#+attr_latex: :width 0.9\linewidth
+[[file:images/q3-schematic.png]]
+
+#+name: fig-q3-elmore
+#+caption: The Elmore model of the multiplexers being analyzed.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/q3-elmore-model.png]]
+
+#+name: eq-q3-growth-rate
+\begin{align}
+  \text{let}\quad \mu_n &= m \mu_p; \quad \text{let}\quad x = m + 1 \nonumber \\
+  t_d &= n x R C_t + \sum_{i=1}^{n-1} 3x C_t \cdot i R \nonumber\\
+  t_d &= n x R C_t + 3x R C_t \sum_{i=1}^{n-1} i \nonumber\\
+  t_d &= x R C_t \left( n + 3 \sum_{i=1}^{n-1} i \right) \nonumber\\
+  t_d &= x R C_t \left( n + 3 \left( \frac{n \left( n-1 \right)}{2} \right) \right) \nonumber\\
+  t_d &= x R C_t \left( n + \frac{3}{2} n^2 - \frac{3}{2} n \right) \nonumber\\
+  t_d &= x R C_t \left( \frac{3}{2} n^2 - \frac{1}{2}n \right) \nonumber \\
+  \therefore t_d &= \frac{x R C_t}{2} \left( 3 n^2 - n \right)
+\end{align}
