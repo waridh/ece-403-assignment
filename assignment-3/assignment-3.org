@@ -1,23 +1,8 @@
-#+title: ECE 403 Assignment 2
+#+title: ECE 403 Assignment 3
 #+options: tags:nil todo:nil num:nil toc:nil title:nil
 #+author: Waridh (Bach) Wongwandanee
-#+LATEX_HEADER: \makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
-#+LATEX_CLASS_OPTIONS: [hidelinks, 11pt]
-#+latex_header: \def \homeworkNumber{3}
-#+latex_header: \usepackage{siunitx}
-#+latex_header: \usepackage{amsmath}
-#+latex_header: \usepackage{amssymb}
-#+latex_header: \usepackage{mathtools}
-#+latex_header: \usepackage{circuitikz}
-#+latex_header: \usepackage{float}
-#+latex_header: \usepackage{karnaugh-map}
-#+latex_header: \usepackage[sfdefault]{plex-sans}
-#+latex_header: \usepackage[scale=0.90]{plex-mono}
-#+LATEX_HEADER: \usepackage{fancyhdr}
-#+LATEX_HEADER: \pagestyle{fancyplain}
-#+LATEX_HEADER: \chead{Assignment \homeworkNumber}
-#+LATEX_HEADER: \lhead{Bach \textsc{Wongwandanee}}
-#+LATEX_HEADER: \rhead{ECE 403}
+#+setupfile: ../latex-setup.config
+#+LATEX_HEADER: \chead{Assignment 3}
 * Question 1
 Produce a schematic design of 2-to-1 non-restoring multiplexer gate using CMOS transmission gates plus other static CMOS gates. Use inputs ~{s, d0, d1}~ and output ~y~. Inverted signals are not provided.
 
