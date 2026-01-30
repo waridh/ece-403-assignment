@@ -1,0 +1,70 @@
+% Created 2026-01-30 Fri 13:12
+% Intended LaTeX compiler: pdflatex
+\documentclass[hidelinks, 11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{karnaugh-map}
+\usepackage[sfdefault]{plex-sans}
+\usepackage[scale=0.90]{plex-mono}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\lhead{Bach \textsc{Wongwandanee}}
+\rhead{ECE 403}
+\chead{Assignment 4}
+\author{Waridh (Bach) Wongwandanee}
+\date{\today}
+\title{ECE 403 Assignment 4}
+\hypersetup{
+ pdfauthor={Waridh (Bach) Wongwandanee},
+ pdftitle={ECE 403 Assignment 4},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+\begin{equation}
+\label{eq-target}
+y = ab + ac + cd
+\end{equation}
+\section*{Question 1 a}
+\label{sec:orgfeee1cb}
+Design a transistor schematic of a complex CMOS static gate plus inverters to implement y. Minimize transistor count. Label transistor widths (making textbook assumptions) for all stages having equivalent drive to a \(W_{pmos} = 2\), \(W_{nmos} = 1\) inverter.
+\section*{Question 1 c}
+\label{sec:org227cf26}
+Design a sticks layout for your schematic (previous page). Minimize and report the number of diffusion regions and number of diffusion contacts. (Sticks diagrams are not to scale, including transistor widths.)
+
+
+\begin{table}[htbp]
+\caption{The count of components used in the sticks diagram.}
+\centering
+\begin{tabular}{ll}
+Parameter & Value\\
+\hline
+Diffusion Regions & \\
+Diffusion contacts & \\
+\end{tabular}
+\end{table}
+\section*{Question 1 d}
+\label{sec:org55d9e68}
+
+Draw a gate-level schematic that implements \(y = ab + ac + cd\) using nothing other than NAND gates, NOR gates and inverters. Optimize for and report the transistor count. 
+\end{document}

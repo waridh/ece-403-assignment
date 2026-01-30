@@ -1,0 +1,31 @@
+#+title: ECE 403 Assignment 4
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+setupfile: ../latex-setup.config
+#+LATEX_HEADER: \chead{Assignment 4}
+
+#+name: eq-target
+\begin{equation}
+y = ab + ac + cd
+\end{equation}
+
+* Question 1 a
+Design a transistor schematic of a complex CMOS static gate plus inverters to implement y. Minimize transistor count. Label transistor widths (making textbook assumptions) for all stages having equivalent drive to a \(W_{pmos} = 2\), \(W_{nmos} = 1\) inverter.
+
+We cannot construct \(y\) in a single stage, but we are able to implement \(\overline{y}\) and then invert that value to obtain \(y\).
+
+Now trying to implement \(\overline{y} = ab + ac + cd\).
+
+* Question 1 c
+Design a sticks layout for your schematic (previous page). Minimize and report the number of diffusion regions and number of diffusion contacts. (Sticks diagrams are not to scale, including transistor widths.)
+
+
+#+caption: The count of components used in the sticks diagram.
+| Parameter          | Value |
+|--------------------+-------|
+| Diffusion Regions  |       |
+| Diffusion contacts |       |
+
+* Question 1 d
+
+Draw a gate-level schematic that implements \(y = ab + ac + cd\) using nothing other than NAND gates, NOR gates and inverters. Optimize for and report the transistor count.
