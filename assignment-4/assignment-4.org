@@ -14,18 +14,58 @@ Design a transistor schematic of a complex CMOS static gate plus inverters to im
 
 We cannot construct \(y\) in a single stage, but we are able to implement \(\overline{y}\) and then invert that value to obtain \(y\).
 
-Now trying to implement \(\overline{y} = ab + ac + cd\).
+Now the solution will be the implementation of \(\overline{y} = ab + ac + cd\) in the first stage, then passing the output of this gate to an inverter. This design is available in figure [[fig-q1-schematic]]. *This design uses 12 transistors*.
+
+#+name: fig-q1-schematic
+#+caption: Schematic of the gate being implemented, with minimization of transistors applied.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/q1-schematic.png]]
 
 * Question 1 c
 Design a sticks layout for your schematic (previous page). Minimize and report the number of diffusion regions and number of diffusion contacts. (Sticks diagrams are not to scale, including transistor widths.)
 
+The required layout is available in figure [[fig-q2-layout]], and the count of the components used is available in table [[tab-q2-layout-count]].
 
+#+name: fig-q2-layout
+#+caption: Layout of the implemented gate, with minimization of diffusion and contacts applied.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/q2-layout.png]]
+
+#+name: tab-q2-layout-count
 #+caption: The count of components used in the sticks diagram.
 | Parameter          | Value |
 |--------------------+-------|
-| Diffusion Regions  |       |
-| Diffusion contacts |       |
+| Diffusion Regions  |     2 |
+| Diffusion contacts |    12 |
 
 * Question 1 d
 
 Draw a gate-level schematic that implements \(y = ab + ac + cd\) using nothing other than NAND gates, NOR gates and inverters. Optimize for and report the transistor count.
+
+We could start by trying to convert the base expression into NAND/NOR/inverters. This is shown below.
+
+\begin{align*}
+  y &= ab + ac + cd \\
+  y &= \overline{\overline{ab + ac + cd}} \\
+  y &= \overline{\overline{\left( ab \right)} \cdot \overline{\left( ac \right)} \cdot \overline{\left( cd \right)}}
+\end{align*}
+
+From here, a gate level schematic was implemented, available in figure [[fig-q3-gate-schematic]]. Finally, the count of the transistors in the system is available in table [[tab-q3-count]].
+
+#+name: fig-q3-gate-schematic
+#+caption: The gate level schematic for the NAND/NOR/inverter only implementation of ([[eq-target]]).
+#+attr_latex: :width 0.4\linewidth
+[[file:images/q3-gate-schmeatic.png]]
+
+
+#+name: tab-q3-count
+#+caption: Table counting the number of transistors in the gate level schematic.
+| Gate type | number of transistors per gate | number of gates | total number of transistors |
+|-----------+--------------------------------+-----------------+-----------------------------|
+| NAND-2    |                              4 |               3 |                          12 |
+| NAND-3    |                              6 |               1 |                           6 |
+|-----------+--------------------------------+-----------------+-----------------------------|
+|           |                                |             Sum |                          18 |
+
+#+TBLFM: $4=$2*$3
+

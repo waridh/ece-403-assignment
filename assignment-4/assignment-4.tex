@@ -1,4 +1,4 @@
-% Created 2026-01-30 Fri 13:12
+% Created 2026-01-30 Fri 19:02
 % Intended LaTeX compiler: pdflatex
 \documentclass[hidelinks, 11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -46,25 +46,72 @@
 y = ab + ac + cd
 \end{equation}
 \section*{Question 1 a}
-\label{sec:orgfeee1cb}
+\label{sec:org4bedafe}
 Design a transistor schematic of a complex CMOS static gate plus inverters to implement y. Minimize transistor count. Label transistor widths (making textbook assumptions) for all stages having equivalent drive to a \(W_{pmos} = 2\), \(W_{nmos} = 1\) inverter.
+
+We cannot construct \(y\) in a single stage, but we are able to implement \(\overline{y}\) and then invert that value to obtain \(y\).
+
+Now the solution will be the implementation of \(\overline{y} = ab + ac + cd\) in the first stage, then passing the output of this gate to an inverter. This design is available in figure \ref{fig-q1-schematic}. \textbf{This design uses 12 transistors}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{images/q1-schematic.png}
+\caption{\label{fig-q1-schematic}Schematic of the gate being implemented, with minimization of transistors applied.}
+\end{figure}
 \section*{Question 1 c}
-\label{sec:org227cf26}
+\label{sec:orgb28715b}
 Design a sticks layout for your schematic (previous page). Minimize and report the number of diffusion regions and number of diffusion contacts. (Sticks diagrams are not to scale, including transistor widths.)
 
+The required layout is available in figure \ref{fig-q2-layout}, and the count of the components used is available in table \ref{tab-q2-layout-count}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{images/q2-layout.png}
+\caption{\label{fig-q2-layout}Layout of the implemented gate, with minimization of diffusion and contacts applied.}
+\end{figure}
 
 \begin{table}[htbp]
-\caption{The count of components used in the sticks diagram.}
+\caption{\label{tab-q2-layout-count}The count of components used in the sticks diagram.}
 \centering
-\begin{tabular}{ll}
+\begin{tabular}{lr}
 Parameter & Value\\
 \hline
-Diffusion Regions & \\
-Diffusion contacts & \\
+Diffusion Regions & 2\\
+Diffusion contacts & 12\\
 \end{tabular}
 \end{table}
 \section*{Question 1 d}
-\label{sec:org55d9e68}
+\label{sec:org656aeb4}
 
-Draw a gate-level schematic that implements \(y = ab + ac + cd\) using nothing other than NAND gates, NOR gates and inverters. Optimize for and report the transistor count. 
+Draw a gate-level schematic that implements \(y = ab + ac + cd\) using nothing other than NAND gates, NOR gates and inverters. Optimize for and report the transistor count.
+
+We could start by trying to convert the base expression into NAND/NOR/inverters. This is shown below.
+
+\begin{align*}
+  y &= ab + ac + cd \\
+  y &= \overline{\overline{ab + ac + cd}} \\
+  y &= \overline{\overline{\left( ab \right)} \cdot \overline{\left( ac \right)} \cdot \overline{\left( cd \right)}}
+\end{align*}
+
+From here, a gate level schematic was implemented, available in figure \ref{fig-q3-gate-schematic}. Finally, the count of the transistors in the system is available in table \ref{tab-q3-count}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.4\linewidth]{images/q3-gate-schmeatic.png}
+\caption{\label{fig-q3-gate-schematic}The gate level schematic for the NAND/NOR/inverter only implementation of (\ref{eq-target}).}
+\end{figure}
+
+
+\begin{table}[htbp]
+\caption{\label{tab-q3-count}Table counting the number of transistors in the gate level schematic.}
+\centering
+\begin{tabular}{lrrr}
+Gate type & number of transistors per gate & number of gates & total number of transistors\\
+\hline
+NAND-2 & 4 & 3 & 12\\
+NAND-3 & 6 & 1 & 6\\
+\hline
+ &  & Sum & 18\\
+\end{tabular}
+\end{table}
 \end{document}
