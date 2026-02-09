@@ -1,0 +1,103 @@
+% Created 2026-02-08 Sun 16:58
+% Intended LaTeX compiler: pdflatex
+\documentclass[hidelinks, 11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{karnaugh-map}
+\usepackage[sfdefault]{plex-sans}
+\usepackage[scale=0.90]{plex-mono}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\lhead{Bach \textsc{Wongwandanee}}
+\rhead{ECE 403}
+\chead{Assignment 5}
+\author{Waridh (Bach) Wongwandanee}
+\date{\today}
+\title{ECE 403 Assignment 5}
+\hypersetup{
+ pdfauthor={Waridh (Bach) Wongwandanee},
+ pdftitle={ECE 403 Assignment 5},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+Draw a stick diagram of the master-slave D-flipflop. Optimize and count the number of:
+\begin{enumerate}
+\item Transistors
+\item Diffusion Region
+\item Metal Diffusion Contacts
+\end{enumerate}
+
+In this problem, we are choosing to assume that the rest of the system provides the negated clock. The transistor schematic of the system is available in figure \ref{fig-t-schematic}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{images/transistor-schematic.png}
+\caption{\label{fig-t-schematic}The transistor schematic of the D-flipflop. There are 22 transistors in this schematic.}
+\end{figure}
+
+Converting this schematic into a layout is tricky, as it is a large design. We are going to start by making a set of smaller cells. The final layout for the system is available in figure \ref{fig-d-ff-layout}. The total count of the required components are available in table \ref{tab-component-count}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{images/feedback-loop-layout.png}
+\caption{\label{fig-fbl-layout}The layout for the feedback look component of a latch.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{images/transmission-gate-layout.png}
+\caption{\label{fig-transmission-layout}The layout for the transmission gate.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{images/latch-layout.png}
+\caption{\label{fig-latch-layout}The layout for the latch, which combines the transmission gate with the feedback loop component.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{images/ms-latch-layout.png}
+\caption{\label{fig-ms-latch-layout}The layout for both the master and slave latch, implemented with a combined diffusion.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{images/d-ff-layout.png}
+\caption{\label{fig-d-ff-layout}The layout for the full D-flipflop. Implemented with 4 diffusions. All the flipflop interface are labeled in magenta.}
+\end{figure}
+
+
+\begin{table}[htbp]
+\caption{\label{tab-component-count}Count of components of the design.}
+\centering
+\begin{tabular}{lr}
+Value & Count\\
+\hline
+Transistor & 22\\
+Diffusion Region & 4\\
+Metal Diffusion contacts & 22\\
+\end{tabular}
+\end{table}
+\end{document}

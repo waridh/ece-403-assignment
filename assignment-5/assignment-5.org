@@ -1,0 +1,53 @@
+#+title: ECE 403 Assignment 5
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+setupfile: ../latex-setup.config
+#+LATEX_HEADER: \chead{Assignment 5}
+
+Draw a stick diagram of the master-slave D-flipflop. Optimize and count the number of:
+1. Transistors
+2. Diffusion Region
+3. Metal Diffusion Contacts
+
+In this problem, we are choosing to assume that the rest of the system provides the negated clock. The transistor schematic of the system is available in figure [[fig-t-schematic]].
+
+#+name: fig-t-schematic
+#+caption: The transistor schematic of the D-flipflop. There are 22 transistors in this schematic.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/transistor-schematic.png]]
+
+Converting this schematic into a layout is tricky, as it is a large design. We are going to start by making a set of smaller cells. The final layout for the system is available in figure [[fig-d-ff-layout]]. The total count of the required components are available in table [[tab-component-count]].
+
+#+name: fig-fbl-layout
+#+caption: The layout for the feedback look component of a latch.
+#+attr_latex: :width 0.5\linewidth
+[[file:images/feedback-loop-layout.png]]
+
+#+name: fig-transmission-layout
+#+caption: The layout for the transmission gate.
+#+attr_latex: :width 0.5\linewidth
+[[file:images/transmission-gate-layout.png]]
+
+#+name: fig-latch-layout
+#+caption: The layout for the latch, which combines the transmission gate with the feedback loop component.
+#+attr_latex: :width 0.5\linewidth
+[[file:images/latch-layout.png]]
+
+#+name: fig-ms-latch-layout
+#+caption: The layout for both the master and slave latch, implemented with a combined diffusion.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/ms-latch-layout.png]]
+
+#+name: fig-d-ff-layout
+#+caption: The layout for the full D-flipflop. Implemented with 4 diffusions. All the flipflop interface are labeled in magenta.
+#+attr_latex: :width 0.9\linewidth
+[[file:images/d-ff-layout.png]]
+
+
+#+name: tab-component-count
+#+caption: Count of components of the design.
+| Value                    | Count |
+|--------------------------+-------|
+| Transistor               |    22 |
+| Diffusion Region         |     4 |
+| Metal Diffusion contacts |   22  |
