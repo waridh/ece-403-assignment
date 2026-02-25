@@ -1,0 +1,73 @@
+#+title: ECE 403 Assignment 6
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+setupfile: ../latex-setup.config
+#+LATEX_HEADER: \chead{Assignment 6}
+* Question 1
+Non-idealities that increase the MOSFET \(I_{DS}\) when on vs the Shockley model.
+
+The Shockley model is available in ([[eq-shockley]]).
+
+#+name: eq-shockley
+\begin{equation}
+  I_{DS} = \begin{cases}
+    0 & \text{if cutoff} \\
+    \beta\left( \left( V_{GS} - V_{TH} \right) V_{DS} - \frac{V_{DS}^2}{2} \right) & \text{if linear} \\
+    \frac{\beta}{2} \left( V_{GS} - V_{TH} \right)^2 & \text{if saturation}
+  \end{cases}
+\end{equation}
+
+#+name: eq-channel-length-modulation
+\begin{equation}
+I_{DS} = \frac{\beta}{2} \left( V_{GS} - V_{TH} \right)^2 \left( 1 + \lambda V_{DS} \right)
+\end{equation}
+
+#+name: eq-body-effect
+\begin{equation}
+V_t = V_{t0} + \gamma \left( \sqrt{\phi_s + V_{sb}} - \sqrt{\phi_s} \right)
+\end{equation}
+
+#+name: eq-subthreshold-leakage
+\begin{equation}
+I_{DS} = I_{DS0} \exp \left( \frac{V_{GS} - V_{t0} + \eta V_{DS} - k_\gamma V_{sb}}{n v_T} \right) \left( 1 - \exp \left( \frac{-V_{DS}}{v_T} \right) \right)
+\end{equation}
+
+- Channel length modulation :: Seen in ([[eq-channel-length-modulation]]), channel length modulation increases \(I_{DS}\) over the Shockley model.
+- Decreasing \(V_{TH}\) :: The different effects that decrease \(V_{TH}\) will increase \(V_{GS} - V_{TH}\) which in turns increases the value of \(I_{DS}\).
+  There are some effects that decreases \(V_{TH}\)
+  - Body effect :: By decreasing \(V_{sb}\), especially below 0, ([[eq-body-effect]]) shall decrease \(V_{TH}\), which then increases \(I_{DS}\).
+  - Short Channel effect :: By decreasing the channel length, \(V_{TH}\).
+- Subthreshold leakage :: Technically, since the expected Shockley model at cutoff is \qty{0}{A}, then having a non-zero value is more. The subthreshold leakage is available in ([[eq-subthreshold-leakage]]).
+
+* Question 2
+The dual rail domino XOR-3 gate requires the complement function of a XOR-3.
+We are going to first define the definition for the regular XOR-3.
+The XOR-3 function outputs 1 when an odd number of inputs are 1, and 0 otherwise.
+The negation of the XOR-3 would be a XNOR-3, which outputs 1 when there is an even number of 1 in the input. This is described in ([[eq-xor]]), and ([[eq-xnor]]).
+
+#+name: eq-xor
+\begin{equation}
+\text{XOR-3} = A \overline{B} \overline{C} + \overline{A} B \overline{C} + \overline{A} \overline{B} C + A C B
+\end{equation}
+
+#+name: eq-xnor
+\begin{equation}
+\text{XNOR-3} = \overline{A} B C + A \overline{B} C + A B \overline{C} + \overline{A} \overline{B} \overline{C}
+\end{equation}
+
+After finding these equations, the XOR-3 gate using dual rail domino logic is available in figure [[fig-opt-xor]].
+
+#+name: fig-unopt-xor
+#+caption: The unoptimized XOR-3 gate.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/unopt.pdf]]
+
+#+name: fig-little-opt-xor
+#+caption: Intermediate XOR-3 gate.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/little-opt.pdf]]
+
+#+name: fig-opt-xor
+#+caption: Optimized XOR-3 gate.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/opt.pdf]]
