@@ -1,0 +1,94 @@
+#+title: ECE 403 Assignment 7
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+setupfile: ../latex-setup.config
+#+LATEX_HEADER: \chead{Assignment 7}
+* Question 1
+Find the fastest safe clock frequency for a 3-cycle
+pipeline that feeds back on itself. Solve using D-FFs
+for synchronization. Verify that hold time is met.
+- \(T_{skew} = \qty{0}{\pico\s}\)
+- 7 stages of combinational logic, each with \(T_{cd-group} = \qty{100}{\pico\s}\) and, used in the provided sequence, \(T_{pd}=\left\{ {500, 600, 300, 400, 500, 200, 110} \right\} \unit{\pico \s}\).
+  Synchronize the \qty{110}{\pico\s} stage output to the clock.
+- latches and D-FFs : \(T_{setup}=\qty{40}{\pico\s}, T_{hold}=\qty{30}{\pico\s}, T_{pcq}=\qty{45}{\pico\s}, T_{ccq}=\qty{30}{\pico\s}, T_{pdq}=\qty{50}{\pico\s}, T_{cdq}=\qty{35}{\pico\s}\)
+
+We are going to start off with our assumptions.
+We assume here that the combinational component must be executed in order, and the order is given by listing in the question.
+This means that you could only group stages adjacent to each other.
+Additionally, there shall be 3 stages of combinational logic.
+With these assumptions, we can now start to build our pipeline.
+
+In our vision, the new pipeline shall have the following grouping of combinational circuits.
+
+#+begin_example
+{500 + 600, 300 + 400, 500 + 200 + 100}
+#+end_example
+
+Where the first and second group has two stages, and the third group has 3 stages.
+The system is available in figure [[fig-schematic]].
+
+#+name: fig-schematic
+#+caption: The block diagram for the proposed system.
+#+attr_latex: :width 0.7\linewidth
+[[file:images/schematic.png]]
+
+#+name: lst-q1-timing
+#+begin_src plantuml :exports results :results file :file ./images/q1-timing.png
+@startuml
+clock "Clock" as clk with period 50
+robust "D1" as d1
+robust "Q1" as q1
+robust "A" as a
+robust "D2" as d2
+robust "Q2" as q2
+
+d1 has high,low
+q1 has high,low
+a has high,low
+d2 has high,low
+q2 has high,low
+@0
+d1 is {hidden}
+@30
+d1 is low
+@40
+d1 is high
+q1 is low
+d1@40 <-> @50 : t_{setup}
+@50
+d1@50 -> q1@55 : t_{ccq}
+d1 -> q1@60 : t_{pcq}
+d1@50 <-> @65 : t_{hold}
+@55
+q1 is {high,low}
+a is low
+d2 is low
+q1 -> a@60 : t_{cq1} 100ps
+@60
+q1 is high
+q1 -> a@75 : t_{pd1} 500ps
+a is {high,low}
+a -> d2@65 : t_{cq2} 100ps
+@65
+d2 is {high,low}
+@75
+a is high
+a -> d2@90 : t_{pd2} 600ps
+@90
+q2 is low
+d2 is high
+d1@90 <-> @100 : t_{setup}
+
+@105
+q2 is {high,low}
+@enduml
+#+end_src
+
+#+attr_latex: :width 0.7\linewidth
+#+caption: Timing diagram used to understand how the configuration of the system affects the timing parameters.
+#+RESULTS: lst-q1-timing
+[[file:./images/q1-timing.png]]
+
+
+* Question 2
+Repeat with \(T_{skew} = \qty{50}{\pico\s}\), direction unknown
