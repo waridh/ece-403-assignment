@@ -1,4 +1,4 @@
-% Created 2026-03-02 Mon 20:30
+% Created 2026-03-03 Tue 09:53
 % Intended LaTeX compiler: pdflatex
 \documentclass[hidelinks, 12pt]{article}
 
@@ -44,7 +44,7 @@
 \begin{document}
 
 \section*{Question 1}
-\label{sec:orgd666d93}
+\label{sec:org29bbc95}
 Find the fastest safe clock frequency for a 3-cycle
 pipeline that feeds back on itself. Solve using D-FFs
 for synchronization. Verify that hold time is met.
@@ -81,7 +81,57 @@ The system is available in figure \ref{fig-schematic}.
 \includegraphics[width=0.7\linewidth]{./images/q1-timing.png}
 \caption{\label{lst-q1-timing}Timing diagram used to understand how the configuration of the system affects the timing parameters.}
 \end{figure}
+
+\begin{equation}
+\label{eq-min-size}
+T_c \geq t_{pcq} + t_{pd} + t_{setup} + t_{skew}
+\end{equation}
+
+\begin{equation}
+\label{eq-hold-time}
+t_{hold} + t_{skew} \leq t_{ccq} + t_{cd}
+\end{equation}
+
+For a working pipeline architecture, the minimum period is the time it takes to correctly execute the slowest stage of the pipeline.
+We have made the first stage of the pipeline the slowest stage of the pipeline.
+From here, we do our computation in a spreadsheet, illustrated in table \ref{tab-q1}.
+The maximum frequency with no skew was found to be \qty{840.336}{\mega\hertz}.
+
+\begin{table}[htbp]
+\caption{\label{tab-q1}The computed values. The value of minimum \(T_{c}\) was computed from (\ref{eq-min-size}). The verification of the hold time is done through (\ref{eq-hold-time}). In this case, \(t_{skew}=0\). In this case \(t_{hold} = \qty{30}{\pico\s}\). The frequency was found to be \qty{840.336}{\mega\hertz}.}
+\centering
+\begin{tabular}{rrrrl}
+Stage & \(t_{pd}\) & total contamination delay & min \(T_{c}\) & meets hold time\\
+\hline
+1 & 1100 & 200 & 1190 & yes\\
+2 & 700 & 200 & 790 & yes\\
+3 & 800 & 300 & 890 & yes\\
+\hline
+Max period & 1190 &  &  & \\
+Max frequency & 840336134.4537815 &  &  & \\
+\end{tabular}
+\end{table}
 \section*{Question 2}
-\label{sec:orgdc76e12}
-Repeat with \(T_{skew} = \qty{50}{\pico\s}\), direction unknown
+\label{sec:orgb284642}
+Repeat with \(T_{skew} = \qty{50}{\pico\s}\), direction unknown.
+
+With unknown direction, we should put the skew in the worse case direction for both the hold time and setup time constraints.
+With this, we could use (\ref{eq-min-size}) and (\ref{eq-hold-time}) to find out what the safest safe clock frequency is, and if hold time is violated.
+The table with the intermediate results of the computation is available in table \ref{tab-q2}.
+The maximum frequency with the skew at \qty{50}{\pico\s} was found to be \qty{806.45}{\mega\hertz}.
+
+\begin{table}[htbp]
+\caption{\label{tab-q2}The computed values. The value of minimum \(T_{c}\) was computed from (\ref{eq-min-size}). The verification of the hold time is done through (\ref{eq-hold-time}). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Additionally, the effective hold time with the skew applied is \(t_{hold} = \qty{80}{\pico\s}\). The frequency was found to be \qty{806.45}{\mega\hertz}.}
+\centering
+\begin{tabular}{rrrrl}
+Stage & \(t_{pd}\) & total contamination delay & min \(T_{c}\) & meets hold time\\
+\hline
+1 & 1100 & 200 & 1240 & yes\\
+2 & 700 & 200 & 840 & yes\\
+3 & 800 & 300 & 940 & yes\\
+\hline
+Max period & 1240 &  &  & \\
+Max frequency & 806451612.9032258 &  &  & \\
+\end{tabular}
+\end{table}
 \end{document}
