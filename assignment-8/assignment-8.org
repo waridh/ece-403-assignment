@@ -1,0 +1,173 @@
+#+title: ECE 403 Assignment 8
+#+options: tags:nil todo:nil num:nil toc:nil title:nil
+#+author: Waridh (Bach) Wongwandanee
+#+setupfile: ../latex-setup.config
+#+property: header-args:emacs-lisp :exports none :tangle no
+#+property: header-args:elisp :exports none :tangle no
+#+LATEX_HEADER: \chead{Assignment 8}
+* COMMENT Local variables
+# Local Variables:
+# org-table-use-standard-references: nil
+# org-confirm-babel-evaluate: (lambda (lang body) (not (string= lang "elisp")))
+# End:
+
+* Question 1
+Find the fastest functional clock frequency for a 3-cycle pipeline that feeds back on itself.
+Solve with each of 2-phase latches and pulse latches.
+Verify that hold time is met. Use no time borrowing and the maximum time borrowing available.
+- \(T_{skew} = \qty{50}{\pico\s}\), direction unknown
+- 7 groups of combinational logic, each with \(T_{cd\_group} = \qty{100}{\pico\s}\) and, used in the provided sequence, \(T_{pd} = \left\{ 500, 600, 300, 400, 500, 200, 110 \right\} \unit{\pico\s}\) Synchronize the \qty{110}{\pico\s} stage output to the clock.
+- latches and D-FFs : \(T_{setup} = \qty{40}{\pico\s}, T_{hold} = \qty{30}{\pico\s}, T_{pcq}=\qty{45}{\pico\s}, T_{ccq}=\qty{30}{\pico\s}, T_{pdq}=\qty{50}{\pico\s}, T_{cdq}=\qty{35}{\pico\s}\)
+
+** 2 phase latch
+In this section, for the 2-phase latch systems, we are going to start the problem with a \(t_{nonoverlap}=\qty{0}{\pico\s}\).
+
+*** Without time borrowing
+For a two phase latch, we would actually split the 3-cycles into 6 stages.
+They shall be grouped as follows.
+
+#+begin_example
+{500, 600, 300, 400, 500, 200 + 110}
+#+end_example
+
+Here, we are using the standard expression for setup time and hold time.
+Additionally, we are assuming that the size of each half-stage shall be the same, which means that we will pick the larger of the two stages when trying to compute the minimum period.
+
+#+name: eq-2-phase-prop
+\begin{equation}
+T_c \geq  t_{pdq1} + t_{pd1} + t_{pdq2} + t_{pd2} + t_{skew}
+\end{equation}
+
+#+name: eq-2-phase-cont
+\begin{equation}
+t_{cd1}, t_{cd2} \geq t_{hold} - t_{ccq} - t_{nonoverlap}
+\end{equation}
+
+
+#+name: lst-min-period-2-phase
+#+begin_src emacs-lisp :var t_pdq1=45 t_pdq2=500 t_pd1=40 t_pd2=0 t_skew=50
+(+ t_pdq1 t_pdq2 t_pd1 t_pd2 t_skew)
+#+end_src
+
+#+RESULTS: lst-min-period-2-phase
+: 635
+
+
+#+name: lst-hold-time-verification-2-phase
+#+begin_src emacs-lisp :var t_hold=30 t_skew=0 t_ccq=30 t_cd1=100 t_cd2=100 t_nonoverlap=0
+(let ((checkfn (lambda (c-delay) (>= c-delay (- (- t_hold t_ccq) t_nonoverlap)))))
+  (and (funcall checkfn t_cd1) (funcall checkfn t_cd2)))
+#+end_src
+
+#+RESULTS: lst-hold-time-verification-2-phase
+: t
+
+
+#+name: tab-q1-1
+#+caption: The computed values. The value of minimum \(T_{c}\) was computed from ([[eq-2-phase-prop]]). The verification of the hold time is done through ([[eq-2-phase-cont]]). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Additionally, \(t_{cd}\) must be higher than src_elisp[:exports results]{(- (- 30 30) 0)} {{{results(=0=)}}} \unit{\pico\s}. The frequency was found to be \qty{740.74}{\mega\hertz}.
+|         Stage |          \(t_{pd1}\) | \(t_{pd2}\) | max \(t_{pd}\) | \(t_{cd1}\) | \(t_{cd2}\) | min \(T_{c}\) | meets hold time |
+|---------------+-------------------+----------+-------------+----------+----------+------------+-----------------|
+|             1 |               500 |      600 |         600 |      100 |      100 |       1350 | yes             |
+|             2 |               300 |      400 |         400 |      100 |      100 |        950 | yes             |
+|             3 |               500 |      310 |         500 |      100 |      200 |       1150 | yes             |
+|---------------+-------------------+----------+-------------+----------+----------+------------+-----------------|
+|    Max period |              1350 |          |             |          |          |            |                 |
+| Max frequency | 740740740.7407408 |          |             |          |          |            |                 |
+#+TBLFM: @2$4..@4$4='(max $2 $3);N::@2$7..@4$7='(org-sbe "lst-min-period-2-phase" (t_pdq1 50) (t_skew 50) (t_pdq2 50) (t_pd1 (max $3 $2)) (t_pd2 (max $2 $3)));N::@2$8..@4$8='(if (org-sbe "lst-hold-time-verification-2-phase" (t_cd1 $5) (t_cd2 $6) (t_nonoverlap 0) (t_ccq 30) (t_skew 50) (t_hold 30)) "yes" "no")::@5$2='(max @I$7..@II$7);N::@6$2='(/ 1.0 (* 1e-12 @-1));N
+
+
+*** With time borrowing
+With maximum time borrowing, the original grouping of combinational logic would not get a large performance improvement.
+We could rearrange the grouping as follows, and then try to improve the performance.
+
+#+begin_example
+{600, 500, 400, 300, 500, 200 + 110}
+#+end_example
+
+Now, the first group could borrow time from the second group.
+
+#+name: eq-borrow-time
+\begin{equation}
+t_{borrow} = \frac{T_{c borrow}}{2} - \left( t_{setup} + t_{nonoverlap} + t_{skew} \right)
+\end{equation}
+
+So here is how we are going to approach finding the minimum \(T_{c}\). We are going to make a theoretical \(T_{c}\) so that we could compute the possible borrow value.
+We are also computing the \(t_{borrow}\) that we actually need.
+From there, if the amount required is more than the amount that we need, we are going to add the required amount to that period.
+If we could borrow the amount, then we are at the optimal period length.
+
+#+name: tab-q1-2
+#+caption: The computed values. The value of minimum \(T_{c}\) was computed from ([[eq-2-phase-prop]]) and ([[eq-borrow-time]]). The verification of the hold time is done through ([[eq-2-phase-cont]]). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Additionally, \(t_{cd}\) must be higher than src_elisp[:exports results]{(- (- 30 30) 0)} {{{results(=0=)}}} \unit{\pico\s}. The frequency was found to be \qty{760.456}{\mega\hertz}.
+|      Stage |    \(t_{pd1}\) | \(t_{pd2}\) | \(T_{ctheo}\) | \(t_{borrowreq}\) | \(t_{borrowpos}\) | min \(T_{c}\) | \(t_{cd1}\) | \(t_{cd2}\) | valid \(t_{hold}\) |
+|------------+-------------+----------+------------+----------------+----------------+------------+----------+----------+-----------------|
+|          1 |         600 |      500 |       1250 |            100 |             35 |       1315 |      100 |      100 | yes             |
+|          2 |         400 |      300 |        850 |            100 |             35 |        915 |      100 |      100 | yes             |
+|          3 |         500 |      310 |        960 |            190 |             80 |       1070 |      100 |      200 | yes             |
+|------------+-------------+----------+------------+----------------+----------------+------------+----------+----------+-----------------|
+| Max period |        1315 |          |            |                |                |            |          |          |                 |
+|   Max freq | 7.60456e+08 |          |            |                |                |            |          |          |                 |
+#+TBLFM: @2$4..@4$4='(org-sbe "lst-min-period-2-phase" (t_pdq1 50) (t_skew 50) (t_pdq2 50) (t_pd1 $2) (t_pd2 $3));N::@2$5..@4$5='(- $2 $3);N::@2$6..@4$6='(- (/ $4 2) (+ 40 50 $3));N::@2$7..@4$7='(+ $4 (if (< $6 $5) (- $5 $6) 0));N::@2$10..@4$10='(if (org-sbe "lst-hold-time-verification-2-phase" (t_cd1 $8) (t_cd2 $9) (t_nonoverlap 0) (t_ccq 30) (t_skew 50) (t_hold 30)) "yes" "no")::@5$2='(max @I$7..@II$7);N::@6$2='(format "%g" (/ 1.0 (* 1e-12 @-1)));N
+
+
+** Pulse latch
+For the pulsed latch case, we are going to setup the combinational stages similarly to the flip-flop implementation.
+
+#+begin_example
+{500 + 600, 300 + 400, 500 + 200 + 110}
+#+end_example
+
+
+*** Without time borrowing
+
+#+name: eq-pulse-prop
+\begin{equation}
+T_c \geq \text{max} \left( t_{pdq} + t_{pd} , t_{pdq} + t_{pd} + t_{setup} - t_{pw}  \right) + t_{skew}
+\end{equation}
+
+#+name: lst-pulse-prop
+#+begin_src emacs-lisp :var t_pdq=30 t_pd=300 t_setup=40 t_pw=50 t_skew=50
+(+ (max (+ t_pdq t_pd) (- (+ t_pdq t_pd t_setup) t_pw)) t_skew)
+#+end_src
+
+#+name: eq-pulse-cont
+\begin{equation}
+t_{hold} + t_{pw} + t_{skew} \leq t_{ccq} + t_{cd}
+\end{equation}
+
+#+name: lst-hold-time-verification-pulse
+#+begin_src emacs-lisp :var t_hold=30 t_skew=0 t_ccq=30 t_cd=100 t_pw=50
+(<= (+ t_hold t_pw t_skew) (+ t_ccq t_cd))
+#+end_src
+
+
+#+name: tab-q2-1
+#+caption: The computed values. The value of minimum \(T_{c}\) was computed from ([[eq-pulse-prop]]). The verification of the hold time is done through ([[eq-pulse-cont]]). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Here, we found the max \(t_{pw}\) that we could use in the design by rearranging ([[eq-pulse-cont]]), which we found to be \qty{150}{\pico\s}. Additionally, the contamination delay of the combinational segment must be higher than src_elisp[:exports results :cache yes]{(- (+ 30 50 150) 30)} {{{results(=200=)}}} \unit{\pico\s}. The frequency was found to be \qty{833.33}{\mega\hertz}.
+|         Stage |     \(t_{pd}\) | total \(t_{cd}\) | max \(t_{pw}\) | min \(T_{c}\) | meets hold time |
+|---------------+-------------+---------------+-------------+------------+-----------------|
+|             1 |        1100 |           200 |         150 |       1200 | yes             |
+|             2 |         700 |           200 |         150 |        800 | yes             |
+|             3 |         800 |           300 |         150 |        900 | yes             |
+|---------------+-------------+---------------+-------------+------------+-----------------|
+|    Max period |        1200 |               |             |            |                 |
+| Max freq (\unit{\hertz})  | 8.33333e+08 |               |             |            |                 |
+#+TBLFM: @2$2='(+ 500 600)::@2$3='(* 2 100)::@2$4..@4$4='(- (+ (min @I$3..@II$3) 30) 30 50);N::@2$5..@4$5='(org-sbe "lst-pulse-prop" (t_pd $2) (t_skew 50) (t_setup 40) (t_pdq 50) (t_pw $4))::@2$6..@4$6='(if (org-sbe "lst-hold-time-verification-pulse" (t_cd $3) (t_ccq 30) (t_skew 50) (t_hold 30) (t_pw $4)) "yes" "no")::@3$2='(+ 300 400)::@3$3='(* 2 100)::@4$2='(+ 500 200 100)::@4$3='(* 3 100)::@5$2='(max @I$5..@II$5);N::@6$2='(format "%g" (/ 1.0 (* 1e-12 @-1)));N
+*** With time borrowing
+We don't have to change any ordering of the combinational logic here, we are just trying to borrow time from the pulse.
+We are going to use the previously derived value for the pulse with to see how much time we could borrow, and then compute the new period.
+
+#+name: eq-pulse-borrow
+\begin{equation}
+t_{borrow} \leq t_{pw} - \left( t_{setup} + t_{skew} \right)
+\end{equation}
+
+#+name: tab-q2-2
+#+caption: The computed values. The value of minimum \(T_{c}\) was computed from ([[eq-pulse-prop]]), as well as some borrowing from ([[eq-pulse-borrow]]). The verification of the hold time is done through ([[eq-pulse-cont]]). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Here, we found the max \(t_{pw}\) that we could use in the design by rearranging ([[eq-pulse-cont]]), which we found to be \qty{150}{\pico\s}. Additionally, the contamination delay of the combinational segment must be higher than src_elisp[:exports results :cache yes]{(- (+ 30 50 150) 30)} {{{results(=200=)}}} \unit{\pico\s}. The frequency was found to be \qty{877.19}{\mega\hertz}.
+|         Stage |     \(t_{pd}\) | total \(t_{cd}\) | max \(t_{pw}\) | \(t_{borrow}\) | min \(T_{c}\) | meets hold time |
+|---------------+-------------+---------------+-------------+-------------+------------+-----------------|
+|             1 |        1100 |           200 |         150 |          60 |       1140 | yes             |
+|             2 |         700 |           200 |         150 |          60 |        740 | yes             |
+|             3 |         800 |           300 |         150 |          60 |        840 | yes             |
+|---------------+-------------+---------------+-------------+-------------+------------+-----------------|
+|    Max period |        1140 |               |             |             |            |                 |
+| Max freq (\unit{\hertz}) | 8.77193e+08 |               |             |             |            |                 |
+#+TBLFM: @2$2='(+ 500 600)::@2$3='(* 2 100)::@2$4..@4$4='(- (+ (min @I$3..@II$3) 30) 30 50);N::@2$5..@4$5='(- $4 (+ 40 50));N::@2$6..@4$6='(org-sbe "lst-pulse-prop" (t_pd (- $2 $5)) (t_skew 50) (t_setup 40) (t_pdq 50) (t_pw $4));::@2$7..@4$7='(if (org-sbe "lst-hold-time-verification-pulse" (t_cd $3) (t_ccq 30) (t_skew 50) (t_hold 30) (t_pw $4)) "yes" "no")::@3$2='(+ 300 400)::@3$3='(* 2 100)::@4$2='(+ 500 200 100)::@4$3='(* 3 100)::@5$2='(max @I$6..@II$6);N::@6$2='(format "%g" (/ 1.0 (* 1e-12 @-1)));N

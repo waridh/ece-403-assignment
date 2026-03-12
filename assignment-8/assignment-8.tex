@@ -1,0 +1,189 @@
+% Created 2026-03-12 Thu 17:25
+% Intended LaTeX compiler: pdflatex
+\documentclass[hidelinks, 12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{karnaugh-map}
+\usepackage{libertine}
+\usepackage[libertine,cmintegrals,cmbraces,vvarbb]{newtxmath}
+\usepackage[scaled=0.95]{zi4}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\lhead{Bach \textsc{Wongwandanee}}
+\rhead{ECE 403}
+\chead{Assignment 8}
+\author{Waridh (Bach) Wongwandanee}
+\date{\today}
+\title{ECE 403 Assignment 8}
+\hypersetup{
+ pdfauthor={Waridh (Bach) Wongwandanee},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+\section*{Question 1}
+\label{sec:orgd8b70e1}
+Find the fastest functional clock frequency for a 3-cycle pipeline that feeds back on itself.
+Solve with each of 2-phase latches and pulse latches.
+Verify that hold time is met. Use no time borrowing and the maximum time borrowing available.
+\begin{itemize}
+\item \(T_{skew} = \qty{50}{\pico\s}\), direction unknown
+\item 7 groups of combinational logic, each with \(T_{cd\_group} = \qty{100}{\pico\s}\) and, used in the provided sequence, \(T_{pd} = \left\{ 500, 600, 300, 400, 500, 200, 110 \right\} \unit{\pico\s}\) Synchronize the \qty{110}{\pico\s} stage output to the clock.
+\item latches and D-FFs : \(T_{setup} = \qty{40}{\pico\s}, T_{hold} = \qty{30}{\pico\s}, T_{pcq}=\qty{45}{\pico\s}, T_{ccq}=\qty{30}{\pico\s}, T_{pdq}=\qty{50}{\pico\s}, T_{cdq}=\qty{35}{\pico\s}\)
+\end{itemize}
+\subsection*{2 phase latch}
+\label{sec:org7e0fad8}
+In this section, for the 2-phase latch systems, we are going to start the problem with a \(t_{nonoverlap}=\qty{0}{\pico\s}\).
+\subsubsection*{Without time borrowing}
+\label{sec:org4fc234a}
+For a two phase latch, we would actually split the 3-cycles into 6 stages.
+They shall be grouped as follows.
+
+\begin{verbatim}
+{500, 600, 300, 400, 500, 200 + 110}
+\end{verbatim}
+
+Here, we are using the standard expression for setup time and hold time.
+Additionally, we are assuming that the size of each half-stage shall be the same, which means that we will pick the larger of the two stages when trying to compute the minimum period.
+
+\begin{equation}
+\label{eq-2-phase-prop}
+T_c \geq  t_{pdq1} + t_{pd1} + t_{pdq2} + t_{pd2} + t_{skew}
+\end{equation}
+
+\begin{equation}
+\label{eq-2-phase-cont}
+t_{cd1}, t_{cd2} \geq t_{hold} - t_{ccq} - t_{nonoverlap}
+\end{equation}
+
+
+\begin{table}[htbp]
+\caption{\label{tab-q1-1}The computed values. The value of minimum \(T_{c}\) was computed from (\ref{eq-2-phase-prop}). The verification of the hold time is done through (\ref{eq-2-phase-cont}). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Additionally, \(t_{cd}\) must be higher than \texttt{0} \unit{\pico\s}. The frequency was found to be \qty{740.74}{\mega\hertz}.}
+\centering
+\begin{tabular}{rrrrrrrl}
+Stage & \(t_{pd1}\) & \(t_{pd2}\) & max \(t_{pd}\) & \(t_{cd1}\) & \(t_{cd2}\) & min \(T_{c}\) & meets hold time\\
+\hline
+1 & 500 & 600 & 600 & 100 & 100 & 1350 & yes\\
+2 & 300 & 400 & 400 & 100 & 100 & 950 & yes\\
+3 & 500 & 310 & 500 & 100 & 200 & 1150 & yes\\
+\hline
+Max period & 1350 &  &  &  &  &  & \\
+Max frequency & 740740740.7407408 &  &  &  &  &  & \\
+\end{tabular}
+\end{table}
+\subsubsection*{With time borrowing}
+\label{sec:orgbf4d18b}
+With maximum time borrowing, the original grouping of combinational logic would not get a large performance improvement.
+We could rearrange the grouping as follows, and then try to improve the performance.
+
+\begin{verbatim}
+{600, 500, 400, 300, 500, 200 + 110}
+\end{verbatim}
+
+Now, the first group could borrow time from the second group.
+
+\begin{equation}
+\label{eq-borrow-time}
+t_{borrow} = \frac{T_{c borrow}}{2} - \left( t_{setup} + t_{nonoverlap} + t_{skew} \right)
+\end{equation}
+
+So here is how we are going to approach finding the minimum \(T_{c}\). We are going to make a theoretical \(T_{c}\) so that we could compute the possible borrow value.
+We are also computing the \(t_{borrow}\) that we actually need.
+From there, if the amount required is more than the amount that we need, we are going to add the required amount to that period.
+If we could borrow the amount, then we are at the optimal period length.
+
+\begin{table}[htbp]
+\caption{\label{tab-q1-2}The computed values. The value of minimum \(T_{c}\) was computed from (\ref{eq-2-phase-prop}) and (\ref{eq-borrow-time}). The verification of the hold time is done through (\ref{eq-2-phase-cont}). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Additionally, \(t_{cd}\) must be higher than \texttt{0} \unit{\pico\s}. The frequency was found to be \qty{760.456}{\mega\hertz}.}
+\centering
+\begin{tabular}{rrrrrrrrrl}
+Stage & \(t_{pd1}\) & \(t_{pd2}\) & \(T_{ctheo}\) & \(t_{borrowreq}\) & \(t_{borrowpos}\) & min \(T_{c}\) & \(t_{cd1}\) & \(t_{cd2}\) & valid \(t_{hold}\)\\
+\hline
+1 & 600 & 500 & 1250 & 100 & 35 & 1315 & 100 & 100 & yes\\
+2 & 400 & 300 & 850 & 100 & 35 & 915 & 100 & 100 & yes\\
+3 & 500 & 310 & 960 & 190 & 80 & 1070 & 100 & 200 & yes\\
+\hline
+Max period & 1315 &  &  &  &  &  &  &  & \\
+Max freq & 7.60456e+08 &  &  &  &  &  &  &  & \\
+\end{tabular}
+\end{table}
+\subsection*{Pulse latch}
+\label{sec:orgefd6357}
+For the pulsed latch case, we are going to setup the combinational stages similarly to the flip-flop implementation.
+
+\begin{verbatim}
+{500 + 600, 300 + 400, 500 + 200 + 110}
+\end{verbatim}
+\subsubsection*{Without time borrowing}
+\label{sec:org83514eb}
+
+\begin{equation}
+\label{eq-pulse-prop}
+T_c \geq \text{max} \left( t_{pdq} + t_{pd} , t_{pdq} + t_{pd} + t_{setup} - t_{pw}  \right) + t_{skew}
+\end{equation}
+
+\begin{equation}
+\label{eq-pulse-cont}
+t_{hold} + t_{pw} + t_{skew} \leq t_{ccq} + t_{cd}
+\end{equation}
+
+\begin{table}[htbp]
+\caption{\label{tab-q2-1}The computed values. The value of minimum \(T_{c}\) was computed from (\ref{eq-pulse-prop}). The verification of the hold time is done through (\ref{eq-pulse-cont}). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Here, we found the max \(t_{pw}\) that we could use in the design by rearranging (\ref{eq-pulse-cont}), which we found to be \qty{150}{\pico\s}. Additionally, the contamination delay of the combinational segment must be higher than \texttt{200} \unit{\pico\s}. The frequency was found to be \qty{833.33}{\mega\hertz}.}
+\centering
+\begin{tabular}{rrrrrl}
+Stage & \(t_{pd}\) & total \(t_{cd}\) & max \(t_{pw}\) & min \(T_{c}\) & meets hold time\\
+\hline
+1 & 1100 & 200 & 150 & 1200 & yes\\
+2 & 700 & 200 & 150 & 800 & yes\\
+3 & 800 & 300 & 150 & 900 & yes\\
+\hline
+Max period & 1200 &  &  &  & \\
+Max freq (\unit{\hertz}) & 8.33333e+08 &  &  &  & \\
+\end{tabular}
+\end{table}
+\subsubsection*{With time borrowing}
+\label{sec:orgc162f49}
+We don't have to change any ordering of the combinational logic here, we are just trying to borrow time from the pulse.
+We are going to use the previously derived value for the pulse with to see how much time we could borrow, and then compute the new period.
+
+\begin{equation}
+\label{eq-pulse-borrow}
+t_{borrow} \leq t_{pw} - \left( t_{setup} + t_{skew} \right)
+\end{equation}
+
+\begin{table}[htbp]
+\caption{\label{tab-q2-2}The computed values. The value of minimum \(T_{c}\) was computed from (\ref{eq-pulse-prop}), as well as some borrowing from (\ref{eq-pulse-borrow}). The verification of the hold time is done through (\ref{eq-pulse-cont}). In this case, \(t_{skew}=\qty{50}{\pico\s}\). Here, we found the max \(t_{pw}\) that we could use in the design by rearranging (\ref{eq-pulse-cont}), which we found to be \qty{150}{\pico\s}. Additionally, the contamination delay of the combinational segment must be higher than \texttt{200} \unit{\pico\s}. The frequency was found to be \qty{877.19}{\mega\hertz}.}
+\centering
+\begin{tabular}{rrrrrrl}
+Stage & \(t_{pd}\) & total \(t_{cd}\) & max \(t_{pw}\) & \(t_{borrow}\) & min \(T_{c}\) & meets hold time\\
+\hline
+1 & 1100 & 200 & 150 & 60 & 1140 & yes\\
+2 & 700 & 200 & 150 & 60 & 740 & yes\\
+3 & 800 & 300 & 150 & 60 & 840 & yes\\
+\hline
+Max period & 1140 &  &  &  &  & \\
+Max freq (\unit{\hertz}) & 8.77193e+08 &  &  &  &  & \\
+\end{tabular}
+\end{table}
+\end{document}
