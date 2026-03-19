@@ -1,4 +1,4 @@
-% Created 2026-03-19 Thu 15:31
+% Created 2026-03-19 Thu 17:19
 % Intended LaTeX compiler: pdflatex
 \documentclass[hidelinks, 12pt]{article}
 
@@ -46,7 +46,7 @@
 \begin{document}
 
 \section*{Question 1}
-\label{sec:orgb143958}
+\label{sec:org5e89605}
 For a circuit:
 asynchronous input -- D-FF -- combinational logic -- D-FF,
 find an expression for the decision time.
@@ -93,10 +93,10 @@ MTBF = \frac{e^{t/ \tau_m}}{T_w f_{clock} f_{data}}
 \end{equation}
 
 Looking at (\ref{eq-new-mtbf}), we see that we should use a mathematical tool to solve for this.
-I think that we are allowed to use constraint solvers in this course, so I put this expression into Wolfram Alpha to solve for \(T_{c}\).
+I think that we are allowed to use constraint solvers in this course, so I put this expression into Wolfram Alpha\footnote{\url{https://www.wolframalpha.com/}} to solve for \(T_{c}\).
 The resulting value of \(T_{c}\) is \qty{2051.73}{\pico\s}.
 \section*{Question 2}
-\label{sec:orgfe0cd48}
+\label{sec:org30f136a}
 Perform a manual simulation (all gates have a propagation delay of \qty{1}{\nano\s}) on this D-latch based on
 an SR latch with D rising \qty{1}{\nano\s} before CLK falls (a
 setup time violation). If the answer looks wrong, you
@@ -106,5 +106,13 @@ probably have it right.
 \centering
 \includegraphics[width=0.7\linewidth]{images/q2-prompt.png}
 \caption{\label{fig-q2-prompt}The diagram of the latch, as well as the initial component of the timing diagram that will be analyzed.}
+\end{figure}
+
+The timing diagram for this problem is available in figure \ref{fig-q2-result}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.9\linewidth]{./images/q2-timing.png}
+\caption{\label{fig-q2-result}The resulting timing diagram for question 2.}
 \end{figure}
 \end{document}

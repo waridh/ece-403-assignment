@@ -5,10 +5,6 @@
 #+property: header-args:emacs-lisp :exports none :tangle no
 #+property: header-args:elisp :exports none :tangle no
 #+LATEX_HEADER: \chead{Assignment 9}
-* Local variables :noexport:
-# Local Variables:
-# org-table-use-standard-references: nil
-# End:
 
 * Question 1
 For a circuit:
@@ -69,55 +65,73 @@ probably have it right.
 #+attr_latex: :width 0.7\linewidth
 [[file:images/q2-prompt.png]]
 
+The timing diagram for this problem is available in figure [[fig-q2-result]].
 
 #+name: lst-q2-timing
 #+begin_src plantuml :exports results :results file :file ./images/q2-timing.png
 @startuml
-clock "Clock" as clk with period 50
-robust "D1" as d1
-robust "Q1" as q1
-robust "A" as a
-robust "D2" as d2
-robust "Q2" as q2
+clock "Clock" as clk with period 10
+binary "D" as d
+binary "DB" as db
+binary "RB" as rb
+binary "SB" as sb
+binary "Q" as q
+binary "QB" as qb
 
-d1 has high,low
-q1 has high,low
-a has high,low
-d2 has high,low
-q2 has high,low
 @0
-d1 is {hidden}
-@30
-d1 is low
-@40
-d1 is high
-q1 is low
-d1@40 <-> @50 : t_{setup}
-@50
-d1@50 -> q1@55 : t_{ccq}
-d1 -> q1@60 : t_{pcq}
-d1@50 <-> @65 : t_{hold}
-@55
-q1 is {high,low}
-a is low
-d2 is low
-q1 -> a@60 : t_{cq1} 100ps
-@60
-q1 is high
-q1 -> a@75 : t_{pd1} 500ps
-a is {high,low}
-a -> d2@65 : t_{cq2} 100ps
-@65
-d2 is {high,low}
-@75
-a is high
-a -> d2@90 : t_{pd2} 600ps
-@90
-q2 is low
-d2 is high
-d1@90 <-> @100 : t_{setup}
+d is low
+sb is high
+db is high
+qb is high
 
-@105
-q2 is {high,low}
+@4
+d is high
+
+@5
+db is low
+sb is low
+
+@6
+sb is high
+rb is high
+q is high
+
+@7
+qb is low
+q is low
+
+@8
+qb is high
+q is high
+
+@9
+q is low
+qb is low
+
+@10
+q is high
+qb is high
+
+@11
+sb is low
+q is low
+qb is low
+
+@12
+q is high
+qb is high
+
+@13
+q is high
+qb is low
+
+@14
+q is high
+qb is low
 @enduml
 #+end_src
+
+#+name: fig-q2-result
+#+caption: The resulting timing diagram for question 2.
+#+RESULTS: lst-q2-timing
+[[file:./images/q2-timing.png]]
