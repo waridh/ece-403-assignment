@@ -1,0 +1,92 @@
+% Created 2026-03-19 Thu 09:52
+% Intended LaTeX compiler: pdflatex
+\documentclass[hidelinks, 12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{karnaugh-map}
+\usepackage{libertine}
+\usepackage[libertine,cmintegrals,cmbraces,vvarbb]{newtxmath}
+\usepackage[scaled=0.95]{zi4}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\lhead{Bach \textsc{Wongwandanee}}
+\rhead{ECE 403}
+\chead{Assignment 9}
+\author{Waridh (Bach) Wongwandanee}
+\date{\today}
+\title{ECE 403 Assignment 9}
+\hypersetup{
+ pdfauthor={Waridh (Bach) Wongwandanee},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+\section*{Question 1}
+\label{sec:org0ae7e58}
+For a circuit:
+asynchronous input -- D-FF -- combinational logic -- D-FF,
+find an expression for the decision time.
+Find the max clock rate that will give this system a MTBF of the current age of the universe.
+If there’s no closed form solution, try a recurrence relation (i.e. \(x = f(x)\) or \(x = f^{-1} (x)\), whichever one converges).
+\(T_{pd} = \qty{900}{\pico\s},~T_{setup}=\qty{60}{\pico\s},~T_{hold}=\qty{50}{\pico\s},~T_{pcq}=\qty{90}{\pico\s},~T_{ccq}=\qty{70}{\pico\s},~\tau_m=\qty{20}{\pico\s};~T_w=\qty{120}{\pico\s};~f_{data}=\qty{20}{\mega\hertz}\).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.9\linewidth]{images/q1-system.png}
+\caption{\label{fig-q1-prompt}The block diagram of the system being described in question 1.}
+\end{figure}
+
+For this problem, we have to use the current age of the universe, which we are going to claim is 13.787 billion years old\footnote{\url{https://en.wikipedia.org/wiki/Age\_of\_the\_universe}}.
+We are going to convert this value to seconds so that things are normalized. The age of the universe in seconds is \texttt{4.350846312e+17} \unit{\s}.
+We shall use this number at a later time.
+
+Now, to find the decision time, we are looking to find the time where if you are not able to make a decision by this time, the system has failed.
+Well, we say that the system will fail if a stable value cannot be produced before the setup time of second DFF in the system. Now, considering the combinational component, we have to add the propagation delay of the combinational component into account as well.
+With those factors in mind, we set the decision time to (\ref{eq-decision-time}).
+
+\begin{equation}
+\label{eq-decision-time}
+t = T_{C} - \left( t_{setup} + t_{pd} \right)
+\end{equation}
+
+
+\begin{equation}
+MTBF = \frac{e^{t/ \tau_m}}{T_w f_{clock} f_{data}}
+\end{equation}
+\section*{Question 2}
+\label{sec:orgec9059a}
+Perform a manual simulation (all gates have a propagation delay of \qty{1}{\nano\s}) on this D-latch based on
+an SR latch with D rising \qty{1}{\nano\s} before CLK falls (a
+setup time violation). If the answer looks wrong, you
+probably have it right.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{images/q2-prompt.png}
+\caption{\label{fig-q2-prompt}The diagram of the latch, as well as the initial component of the timing diagram that will be analyzed.}
+\end{figure}
+\end{document}
