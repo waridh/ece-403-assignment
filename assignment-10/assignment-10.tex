@@ -1,4 +1,4 @@
-% Created 2026-03-25 Wed 19:56
+% Created 2026-03-26 Thu 13:53
 % Intended LaTeX compiler: pdflatex
 \documentclass[hidelinks, 12pt]{article}
 
@@ -32,6 +32,8 @@
 \pagestyle{fancyplain}
 \lhead{Bach \textsc{Wongwandanee}}
 \rhead{ECE 403}
+\lstdefinelanguage{Julia} {morekeywords={abstract,break,case,catch,const,continue,do,else,elseif, end,export,false,for,function,immutable,import,importall,if,in, macro,module,otherwise,quote,return,switch,true,try,type,typealias, using,while}, sensitive=true,alsoother={$}, morecomment=[l]\#, morecomment=[n]{\#=}{=\#}, morestring=[s]{"}{"}, morestring=[m]{'}{'}, }[keywords,comments,strings]
+\lstset{ language         = Julia, basicstyle       = \ttfamily, keywordstyle     = \bfseries\color{blue}, stringstyle      = \color{magenta}, commentstyle     = \color{ForestGreen}, showstringspaces = false, }
 \chead{Assignment 10}
 \author{Waridh (Bach) Wongwandanee}
 \date{\today}
@@ -48,7 +50,7 @@
 \begin{document}
 
 \section*{Question 1}
-\label{sec:org70ff690}
+\label{sec:orgcb34e1a}
 What is the average activity of the output of a 32-bit binary counter when incrementing every clock cycle?
 
 Here is how we are going to think about this.
@@ -70,7 +72,7 @@ This is represented with the following expression.
 
 Where \(n\), is the number of bits of the counter output.
 
-\begin{lstlisting}[language=Lisp,label=lst-alpha-solver,caption={Racket implementation used to find \(\alpha\)},captionpos=b,numbers=none]
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language=Lisp,label=lst-alpha-solver,caption={Racket implementation used to find \(\alpha\)},captionpos=b,numbers=none]
 (define (alpha n)
   (define (alpha-iter acc iter)
     (if (>= iter n)
@@ -85,7 +87,7 @@ Where \(n\), is the number of bits of the counter output.
 
 From here, we found that the \(\alpha\) of the 32 bit counter is \texttt{0.062499999985448085}.
 \section*{Question 2}
-\label{sec:org0e1abc5}
+\label{sec:orgc1e3a0b}
 For a static CMOS with a clock frequency of \qty{1}{\giga\hertz}, \(V_{dd}=\qty{1.2}{\volt}\), with a total internal parasitic capacitance per bit of the counter of \qty{40}{\femto\farad} and a load capacitance per bit of \qty{90}{\femto\farad}, what is the dynamic power consumption? Assume no glitches in the combinational logic.
 
 \begin{equation}
@@ -100,7 +102,7 @@ Where we have the following value for \(C\).
 We could just compute this using racket again.
 The code is available in listing \ref{lst-dynamic-power}.
 
-\begin{lstlisting}[language=Lisp,label=lst-dynamic-power,caption={Racket implementation used to find the dynamic power of the output to the counter.},captionpos=b,numbers=none]
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language=Lisp,label=lst-dynamic-power,caption={Racket implementation used to find the dynamic power of the output to the counter.},captionpos=b,numbers=none]
 (define (dyn-power alpha capacitance f_clk V_dd)
   (* alpha f_clk (* V_dd V_dd) capacitance))
 (~a (exact->inexact
@@ -109,7 +111,7 @@ The code is available in listing \ref{lst-dynamic-power}.
 
 And so we found that the power used is \texttt{1.2674999997048872e-12 W}.
 \section*{Question 3}
-\label{sec:orge341475}
+\label{sec:org3068282}
 You have been asked to design the signalling used on \qty{500}{\micro \meter} wire on an integrated circuit to minimize power consumption. Your options are full-swing static CMOS or low voltage swing \qty{200}{\milli\volt} signalling, both single-ended. The minimum width wire has a capacitance of \qty{250}{\pico\farad\per \meter}. The system clock is \qty{500}{\mega\hertz} and the signal has an activity of 0.45.\(V_{DD}\) is \qty{0.9}{\volt}. Both receivers have an input capacitance of \qty{30}{\femto \farad}. The receiver for low voltage signalling consumes \qty{30}{\micro\ampere} from \(V_{DD}\) continuously (assume independent of \(f_{c}\) and noise margins are sufficient).
 Assume that unspecified values are negligible.
 
@@ -118,7 +120,7 @@ Assume that unspecified values are negligible.
 P_{dyn, low-swing} = \alpha C f V_{swing} V_{driver}
 \end{equation}
 \subsection*{Part a}
-\label{sec:orgb6f7b41}
+\label{sec:orga755cae}
 Find the total capacitance driven by the full-swing static CMOS driver.
 
 Find the power consumption of the driver.
@@ -126,13 +128,13 @@ Find the power consumption of the driver.
 Looking at the capacitance of the wire, we have the following expression.
 \[\qty{500}{\micro\meter} \times \qty{250}{\pico\farad\per\meter}\]
 
-\begin{lstlisting}[language=Lisp,label=lst-wire-cap,caption={Quick code used to find the wire capacitance.},captionpos=b,numbers=none]
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language=Lisp,label=lst-wire-cap,caption={Quick code used to find the wire capacitance.},captionpos=b,numbers=none]
 (* 500e-6 250e-12)
 \end{lstlisting}
 
 With this, we could add the value of the input capacitance of the receiver to the wire capacitance to get the total value of the capacitance.
 
-\begin{lstlisting}[language=Lisp,label=lst-total-cap,caption={Quick code used to find the wire capacitance.},captionpos=b,numbers=none]
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language=Lisp,label=lst-total-cap,caption={Quick code used to find the wire capacitance.},captionpos=b,numbers=none]
 (+ wire-cap 30e-15)
 \end{lstlisting}
 
@@ -142,24 +144,69 @@ Due to having static power consumption be unspecified, we assume that only dynam
 
 Using (\ref{eq-dyn-pow}), we are able to find the power usage of the full swing driver.
 
-\begin{lstlisting}[language=Lisp,label=lst-full-swing-power,caption={The expression for the power usage of the driver when using full swing signalling.},captionpos=b,numbers=none]
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language=Lisp,label=lst-full-swing-power,caption={The expression for the power usage of the driver when using full swing signalling.},captionpos=b,numbers=none]
 (* 500e6 (* 0.9 0.9) total-cap 0.45)
 \end{lstlisting}
 
-\phantomsection
-\label{}
-\begin{verbatim}
-2.8248750000000003e-05
-\end{verbatim}
-
 Using listing \ref{lst-full-swing-power}, we are able to find \(P_{full-swing}\) to be \texttt{2.8248750000000003e-05} \unit{\watt}.
 \subsection*{Part b}
-\label{sec:org8610904}
+\label{sec:orga907d91}
 Using low swing signalling, find the power consumption of the driver plus receiver.
 The driver and receiver must take their power from \(V_{DD}\).
 
 The dynamic power expression for the low-swing signalling is available in (\ref{eq-low-swing-dyn}).
+In addition to the dynamic power, there is static power usage in this version of the system as well, which could be modelled with the following expression.
+
+\[P_{total} = P_{dyn} + P_{static}\]
+
+
+\[P_{static} = V_{DD} I_{static}\]
+
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language={[Objective]Caml},caption={The relevant parameters.},captionpos=b,numbers=none]
+let v_dd = 0.9;;
+let i_static = 30e-6;;
+let v_swing = 200e-3;;
+let c = 1.55e-13;;
+let f = 500e6;;
+let activity = 0.45;;
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language={[Objective]Caml},caption={The expression for the powers for this problem, written in OCaml.},captionpos=b,numbers=none]
+let power_static v i = v *. i;;
+let power_dynamic v_d v_s c f alpha = v_d *. v_s *. c *. f *. alpha;;
+let power v_d v_s c f alpha i_s =
+  (power_static v_d i_s)
+  +. (power_dynamic v_d v_s c f alpha);;
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language={[Objective]Caml},label=lst-swing-power,caption={The result of applying the static power on the input values},captionpos=b,numbers=none]
+power v_dd v_swing c f activity i_static;;
+\end{lstlisting}
+
+The power consumption of the voltage swing implementation was then found to be \texttt{3.327750000000001e-05} \unit{\watt}.
 \subsection*{Part c}
-\label{sec:org12e9dc6}
+\label{sec:orgf4abf07}
 At what clock frequency would power consumption of the two options be equal?
+
+We are going to do two things here, first, we are going to plot the relationship between the powers, which could be seen in figure \ref{lst-power-of-frequency}.
+After doing that, we are computing the exact frequency by using an equality seen below.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{./images/power-of-freq.png}
+\caption{\label{lst-power-of-frequency}The plot of the power consumption of the two signalling schemes.}
+\end{figure}
+
+\begin{align*}
+  V_{DD} I_{static} + \alpha C f V_{swing} V_{DD} &= \alpha C f V_{DD}^{2} \\
+  I_{static} + \alpha C f V_{swing} &= \alpha C f V_{DD} \\
+  I_{static} &= f \alpha C \left( V_{DD} - V_{swing} \right) \\
+  f &= \frac{I_{static}}{\alpha C \left( V_{DD} - V_{swing} \right)}
+\end{align*}
+
+\begin{lstlisting}[frame=single,basicstyle=\ttfamily,keywordstyle=\color{black}\bfseries\underbar,language={[Objective]Caml},label=lst-same-power-freq,caption={The code that will evaluate the frequency where the power consumption is the same.},captionpos=b,numbers=none]
+i_static /. (activity *. c *. (v_dd -. v_swing));;
+\end{lstlisting}
+
+From evaluating this, we found that power consumption is the same when the frequency is \texttt{614439324.1167434} \unit{\hertz}.
 \end{document}

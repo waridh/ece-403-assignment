@@ -77,6 +77,10 @@ The code is available in listing [[lst-dynamic-power]].
 And so we found that the power used is call_lst-dynamic-power[:exports results]() {{{results(=1.2674999997048872e-12 W=)}}}.
 
 * Question 3
+:properties:
+:header-args:ocaml: :session default :exports code
+:end:
+
 You have been asked to design the signalling used on \qty{500}{\micro \meter} wire on an integrated circuit to minimize power consumption. Your options are full-swing static CMOS or low voltage swing \qty{200}{\milli\volt} signalling, both single-ended. The minimum width wire has a capacitance of \qty{250}{\pico\farad\per \meter}. The system clock is \qty{500}{\mega\hertz} and the signal has an activity of 0.45.\(V_{DD}\) is \qty{0.9}{\volt}. Both receivers have an input capacitance of \qty{30}{\femto \farad}. The receiver for low voltage signalling consumes \qty{30}{\micro\ampere} from \(V_{DD}\) continuously (assume independent of \(f_{c}\) and noise margins are sufficient).
 Assume that unspecified values are negligible.
 
@@ -126,7 +130,89 @@ Using low swing signalling, find the power consumption of the driver plus receiv
 The driver and receiver must take their power from \(V_{DD}\).
 
 The dynamic power expression for the low-swing signalling is available in ([[eq-low-swing-dyn]]).
-In addition to the dynamic power, there is static power usage in this version of the system as well, which could be modelled
+In addition to the dynamic power, there is static power usage in this version of the system as well, which could be modelled with the following expression.
+
+\[P_{total} = P_{dyn} + P_{static}\]
+
+
+\[P_{static} = V_{DD} I_{static}\]
+
+#+caption: The relevant parameters.
+#+begin_src ocaml
+let v_dd = 0.9;;
+let i_static = 30e-6;;
+let v_swing = 200e-3;;
+let c = 1.55e-13;;
+let f = 500e6;;
+let activity = 0.45;;
+#+end_src
+
+#+RESULTS:
+: 0.45
+
+#+caption: The expression for the powers for this problem, written in OCaml.
+#+begin_src ocaml
+let power_static v i = v *. i;;
+let power_dynamic v_d v_s c f alpha = v_d *. v_s *. c *. f *. alpha;;
+let power v_d v_s c f alpha i_s =
+  (power_static v_d i_s)
+  +. (power_dynamic v_d v_s c f alpha);;
+#+end_src
+
+#+RESULTS:
+: <fun>
+
+#+name: lst-swing-power
+#+caption: The result of applying the static power on the input values
+#+begin_src ocaml :exports code
+power v_dd v_swing c f activity i_static;;
+#+end_src
+
+The power consumption of the voltage swing implementation was then found to be call_lst-swing-power() {{{results(=3.327750000000001e-05=)}}} \unit{\watt}.
+
+
 ** Part c
 At what clock frequency would power consumption of the two options be equal?
 
+We are going to do two things here, first, we are going to plot the relationship between the powers, which could be seen in figure [[lst-power-of-frequency]].
+After doing that, we are computing the exact frequency by using an equality seen below.
+
+#+name: lst-power-of-frequency
+#+begin_src gnuplot :exports results :results file :file ./images/power-of-freq.png
+set title "Power as a function of frequency"
+set ylabel "Power (W)"
+set xlabel "Frequency (Hz)"
+
+V_dd = 0.9
+I_static = 30e-6
+V_swing = 200e-3
+C = 1.55e-13
+alpha = 0.45
+
+power_swing(v_d, v_s, x) = v_d * v_s * C * alpha * x
+power_full_swing(x) = power_swing(V_dd, V_dd, x)
+power_low_swing(x) = power_swing(V_dd, V_swing, x) + ( I_static * V_dd )
+set xrange[0:1e9]
+plot power_full_swing(x), power_low_swing(x)
+
+#+end_src
+
+#+caption: The plot of the power consumption of the two signalling schemes.
+#+attr_latex: :width 0.7\linewidth
+#+RESULTS: lst-power-of-frequency
+[[file:./images/power-of-freq.png]]
+
+\begin{align*}
+  V_{DD} I_{static} + \alpha C f V_{swing} V_{DD} &= \alpha C f V_{DD}^{2} \\
+  I_{static} + \alpha C f V_{swing} &= \alpha C f V_{DD} \\
+  I_{static} &= f \alpha C \left( V_{DD} - V_{swing} \right) \\
+  f &= \frac{I_{static}}{\alpha C \left( V_{DD} - V_{swing} \right)}
+\end{align*}
+
+#+name: lst-same-power-freq
+#+caption: The code that will evaluate the frequency where the power consumption is the same.
+#+begin_src ocaml :exports code
+i_static /. (activity *. c *. (v_dd -. v_swing));;
+#+end_src
+
+From evaluating this, we found that power consumption is the same when the frequency is call_lst-same-power-freq[:exports results]() {{{results(=614439324.1167434=)}}} \unit{\hertz}.
