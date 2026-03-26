@@ -1,0 +1,165 @@
+% Created 2026-03-25 Wed 19:56
+% Intended LaTeX compiler: pdflatex
+\documentclass[hidelinks, 12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\makeatletter \@ifpackageloaded{geometry}{\geometry{margin=2cm}}{\usepackage[margin=2cm]{geometry}} \makeatother
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{circuitikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{karnaugh-map}
+\usepackage{libertine}
+\usepackage[libertine,cmintegrals,cmbraces,vvarbb]{newtxmath}
+\usepackage[scaled=0.95]{zi4}
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\lhead{Bach \textsc{Wongwandanee}}
+\rhead{ECE 403}
+\chead{Assignment 10}
+\author{Waridh (Bach) Wongwandanee}
+\date{\today}
+\title{ECE 403 Assignment 10}
+\hypersetup{
+ pdfauthor={Waridh (Bach) Wongwandanee},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\usepackage{biblatex}
+
+\begin{document}
+
+\section*{Question 1}
+\label{sec:org70ff690}
+What is the average activity of the output of a 32-bit binary counter when incrementing every clock cycle?
+
+Here is how we are going to think about this.
+Every bit in the counter will change after some amount of cycle, and since this is a simple counter, we could determine the number of cycles it would take before a bit would toggle.
+This value is taken as the following.
+
+\[2^{\text{bit position}}\]
+
+Where the bit position is a 0-based bit index starting from the LSB.
+Now, we could find the rate of toggling by inverting this value.
+
+\[2^{- \left( \text{bit position} \right)}\]
+
+Now since we are looking at the output of a binary counter, each bit only has a weight of \(1/32\).
+From here, we could find the contribution of the different bits by summing the product of the rate of toggle with the contribution to the activity factor.
+This is represented with the following expression.
+
+\[\alpha(n) = \frac{1}{n} \sum_{i=0}^{n-1} \frac{1}{2^i}\]
+
+Where \(n\), is the number of bits of the counter output.
+
+\begin{lstlisting}[language=Lisp,label=lst-alpha-solver,caption={Racket implementation used to find \(\alpha\)},captionpos=b,numbers=none]
+(define (alpha n)
+  (define (alpha-iter acc iter)
+    (if (>= iter n)
+        acc
+        (alpha-iter (+ acc (/ 1 (arithmetic-shift 1 iter)))
+                    (+ iter 1))))
+  (* (/ 1 n) (alpha-iter 0 0)))
+
+(exact->inexact
+ (alpha counter-size))
+\end{lstlisting}
+
+From here, we found that the \(\alpha\) of the 32 bit counter is \texttt{0.062499999985448085}.
+\section*{Question 2}
+\label{sec:org0e1abc5}
+For a static CMOS with a clock frequency of \qty{1}{\giga\hertz}, \(V_{dd}=\qty{1.2}{\volt}\), with a total internal parasitic capacitance per bit of the counter of \qty{40}{\femto\farad} and a load capacitance per bit of \qty{90}{\femto\farad}, what is the dynamic power consumption? Assume no glitches in the combinational logic.
+
+\begin{equation}
+\label{eq-dyn-pow}
+P_{dyn} = \alpha f_{clk} V_{dd}^2 C
+\end{equation}
+
+Where we have the following value for \(C\).
+
+\[C = 32 \times \left( \qty{40}{\femto\farad} + \qty{90}{\femto\farad}\right)\]
+
+We could just compute this using racket again.
+The code is available in listing \ref{lst-dynamic-power}.
+
+\begin{lstlisting}[language=Lisp,label=lst-dynamic-power,caption={Racket implementation used to find the dynamic power of the output to the counter.},captionpos=b,numbers=none]
+(define (dyn-power alpha capacitance f_clk V_dd)
+  (* alpha f_clk (* V_dd V_dd) capacitance))
+(~a (exact->inexact
+ (dyn-power alpha f_clk V_dd capacitance)) " W" )
+\end{lstlisting}
+
+And so we found that the power used is \texttt{1.2674999997048872e-12 W}.
+\section*{Question 3}
+\label{sec:orge341475}
+You have been asked to design the signalling used on \qty{500}{\micro \meter} wire on an integrated circuit to minimize power consumption. Your options are full-swing static CMOS or low voltage swing \qty{200}{\milli\volt} signalling, both single-ended. The minimum width wire has a capacitance of \qty{250}{\pico\farad\per \meter}. The system clock is \qty{500}{\mega\hertz} and the signal has an activity of 0.45.\(V_{DD}\) is \qty{0.9}{\volt}. Both receivers have an input capacitance of \qty{30}{\femto \farad}. The receiver for low voltage signalling consumes \qty{30}{\micro\ampere} from \(V_{DD}\) continuously (assume independent of \(f_{c}\) and noise margins are sufficient).
+Assume that unspecified values are negligible.
+
+\begin{equation}
+\label{eq-low-swing-dyn}
+P_{dyn, low-swing} = \alpha C f V_{swing} V_{driver}
+\end{equation}
+\subsection*{Part a}
+\label{sec:orgb6f7b41}
+Find the total capacitance driven by the full-swing static CMOS driver.
+
+Find the power consumption of the driver.
+
+Looking at the capacitance of the wire, we have the following expression.
+\[\qty{500}{\micro\meter} \times \qty{250}{\pico\farad\per\meter}\]
+
+\begin{lstlisting}[language=Lisp,label=lst-wire-cap,caption={Quick code used to find the wire capacitance.},captionpos=b,numbers=none]
+(* 500e-6 250e-12)
+\end{lstlisting}
+
+With this, we could add the value of the input capacitance of the receiver to the wire capacitance to get the total value of the capacitance.
+
+\begin{lstlisting}[language=Lisp,label=lst-total-cap,caption={Quick code used to find the wire capacitance.},captionpos=b,numbers=none]
+(+ wire-cap 30e-15)
+\end{lstlisting}
+
+This results in \texttt{1.5500000000000002e-13} \unit{\farad}.
+
+Due to having static power consumption be unspecified, we assume that only dynamic power are contributing to the full swing power usage.
+
+Using (\ref{eq-dyn-pow}), we are able to find the power usage of the full swing driver.
+
+\begin{lstlisting}[language=Lisp,label=lst-full-swing-power,caption={The expression for the power usage of the driver when using full swing signalling.},captionpos=b,numbers=none]
+(* 500e6 (* 0.9 0.9) total-cap 0.45)
+\end{lstlisting}
+
+\phantomsection
+\label{}
+\begin{verbatim}
+2.8248750000000003e-05
+\end{verbatim}
+
+Using listing \ref{lst-full-swing-power}, we are able to find \(P_{full-swing}\) to be \texttt{2.8248750000000003e-05} \unit{\watt}.
+\subsection*{Part b}
+\label{sec:org8610904}
+Using low swing signalling, find the power consumption of the driver plus receiver.
+The driver and receiver must take their power from \(V_{DD}\).
+
+The dynamic power expression for the low-swing signalling is available in (\ref{eq-low-swing-dyn}).
+\subsection*{Part c}
+\label{sec:org12e9dc6}
+At what clock frequency would power consumption of the two options be equal?
+\end{document}
