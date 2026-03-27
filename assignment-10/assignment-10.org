@@ -64,15 +64,15 @@ The code is available in listing [[lst-dynamic-power]].
 
 #+name: lst-dynamic-power
 #+caption: Racket implementation used to find the dynamic power of the output to the counter.
-#+begin_src racket :lang racket :exports code :cache yes :var alpha=lst-alpha-solver(counter-size=32) f_clk=1e9 V_dd=1.2 capacitance=(+ 40e-12 90e-12)
+#+begin_src racket :lang racket :exports code :cache yes :var alpha=lst-alpha-solver(counter-size=32) f_clk=1e9 V_dd=1.2 capacitance=(+ 40e-15 90e-15)
 (define (dyn-power alpha capacitance f_clk V_dd)
   (* alpha f_clk (* V_dd V_dd) capacitance))
 (~a (exact->inexact
  (dyn-power alpha f_clk V_dd capacitance)) " W" )
 #+end_src
 
-#+RESULTS[5e1310b2a75acb1e1257fa211ec47b2260211e30]: lst-dynamic-power
-: 1.2674999997048872e-12 W
+#+RESULTS[1c5e15476a14a84e35a61c971f0dbcc834bce604]: lst-dynamic-power
+: 1.2674999997048872e-18 W
 
 And so we found that the power used is call_lst-dynamic-power[:exports results]() {{{results(=1.2674999997048872e-12 W=)}}}.
 
